@@ -1,0 +1,5 @@
+﻿This is a test of nothing other than looping.
+{!Foreach item in collection}
+	The item is called {item.name}.  It is an {item.type}.
+{!End}
+End of test!

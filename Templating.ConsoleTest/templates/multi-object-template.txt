@@ -1,0 +1,2 @@
+﻿This template has two objects:
+it has {person.name} and {animals.name}

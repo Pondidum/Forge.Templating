@@ -1,0 +1,2 @@
+﻿This is a test {name}
+With nothing other than two {things} to be replaced.

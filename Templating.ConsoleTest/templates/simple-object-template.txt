@@ -1,0 +1,2 @@
+﻿This is a template that has an object.
+its {item.name} is steve.  its is only {item.length} long.
