@@ -80,6 +80,7 @@
     </Compile>
     <Compile Include="ReplacementSources\DictionaryReplacementSourceTests.vb" />
     <Compile Include="ReplacementSources\ReflectionReplacementSourceTests.vb" />
+    <Compile Include="SearchStrategies\LoopingSearchStrategyTests.vb" />
     <Compile Include="SearchStrategies\SimpleSearchStrategyTests.vb" />
     <Compile Include="SearchStrategies\StandardSearchStrategyTests.vb" />
   </ItemGroup>
