@@ -1,4 +1,5 @@
 ﻿Imports System.Text.RegularExpressions
+Imports Templating.Extensions.CharArray
 
 Public Class LoopingSearchStrategy
 	Implements ISearchStrategy
@@ -42,29 +43,36 @@ Public Class LoopingSearchStrategy
 
 	Public Function Parse() As String Implements ISearchStrategy.Parse
 
-		Throw New NotImplementedException
+		If _template Is Nothing OrElse _template.Length = 0 Then
+			Return String.Empty
+		End If
+
+		Dim sb As New Text.StringBuilder
+		Dim index As Integer = 0
 		
-		''first we do all the loops (and one of the passed replacements might be in the loop too, so pass them in also)
-		'If Regex.IsMatch(_template, RegexForLoop) Then
+		''first we do all the loops (and one of the parsed replacements might be in the loop too, so pass them in also)
 
-		'For Each m As Match In Regex.Matches(_template, RegexForLoop)
+		For Each m As Match In Regex.Matches(_template, RegexForLoop)
 
-		'Dim loopVariable As String = m.Groups("current").Value.Trim
-		'Dim loopCollection As String = m.Groups("collection").Value.Trim
-		'Dim content As String = m.Groups("content").Value.Trim
+			Dim loopVariable As String = m.Groups("current").Value.Trim
+			Dim loopCollection As String = m.Groups("collection").Value.Trim
+			Dim content As String = m.Groups("content").Value.Trim
 
-		'Dim replacement As New SimpleSearchStrategy
-		'replacement.Template = content.ToArray
+			Dim replacement As New StandardSearchStrategy
+			replacement.Template = content.ToArray
+			replacement.Replacements = _replacements
 
+			sb.Append(_template.Range(index, m.Index - index))
 
+			sb.Append(replacement.Parse)
 
+			index = m.Index + m.Length
 
+		Next
 
-		'Next
+		sb.Append(_template.Range(index, _template.Length - index))
 
-		'End If
-
-
+		Return sb.ToString
 
 	End Function
 

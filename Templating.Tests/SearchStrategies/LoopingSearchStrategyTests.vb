@@ -27,7 +27,7 @@ Public Class LoopingSearchStrategyTests
 	Public Sub Handles_No_Replacement_Source()
 
 		Dim simple As New LoopingSearchStrategy
-		simple.Template = "Test with {one} replacement".ToCharArray
+		simple.Template = "Test with {!foreach item in collection} test {!end} replacement".ToCharArray
 
 		Assert.AreEqual("Test with  replacement", simple.Parse)
 
@@ -40,7 +40,7 @@ Public Class LoopingSearchStrategyTests
 		replacements.Expect(Function(i) i.HasValue("one")).Return(False)
 
 		Dim simple As New LoopingSearchStrategy
-		simple.Template = "Test with {one} replacement".ToCharArray
+		simple.Template = "Test with {!foreach item in collection} test {!end} replacement".ToCharArray
 		simple.Replacements.Add(replacements)
 
 		Assert.AreEqual("Test with  replacement", simple.Parse)
