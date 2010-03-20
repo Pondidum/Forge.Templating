@@ -8,7 +8,7 @@ Imports System.Runtime.InteropServices
 
 ' Review the values of the assembly attributes
 
-<Assembly: AssemblyTitle("Templating.ConsoleTest")> 
+<Assembly: AssemblyTitle("Forge.Templating.ConsoleTest")> 
 <Assembly: AssemblyDescription("")> 
 <Assembly: AssemblyCompany("")> 
 <Assembly: AssemblyProduct("Templating.ConsoleTest")> 

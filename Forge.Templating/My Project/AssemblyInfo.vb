@@ -8,10 +8,10 @@ Imports System.Runtime.InteropServices
 
 ' Review the values of the assembly attributes
 
-<Assembly: AssemblyTitle("ConsoleApplication1")> 
+<Assembly: AssemblyTitle("Forge.Templating")> 
 <Assembly: AssemblyDescription("")> 
 <Assembly: AssemblyCompany("")> 
-<Assembly: AssemblyProduct("ConsoleApplication1")> 
+<Assembly: AssemblyProduct("Templating")> 
 <Assembly: AssemblyCopyright("Copyright ©  2009")> 
 <Assembly: AssemblyTrademark("")> 
 

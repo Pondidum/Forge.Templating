@@ -9,8 +9,8 @@
     </SchemaVersion>
     <ProjectGuid>{F8F18AF6-3035-4624-8AF1-3BFE9987377D}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>Templating.Tests</RootNamespace>
-    <AssemblyName>Templating.Tests</AssemblyName>
+    <RootNamespace>Forge.Templating.Tests</RootNamespace>
+    <AssemblyName>Forge.Templating.Tests</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <MyType>Windows</MyType>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
@@ -25,7 +25,7 @@
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <OutputPath>..\bin\Debug\</OutputPath>
-    <DocumentationFile>Templating.Tests.xml</DocumentationFile>
+    <DocumentationFile>Forge.Templating.Tests.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -34,7 +34,7 @@
     <DefineTrace>true</DefineTrace>
     <Optimize>true</Optimize>
     <OutputPath>..\bin\Release\</OutputPath>
-    <DocumentationFile>Templating.Tests.xml</DocumentationFile>
+    <DocumentationFile>Forge.Templating.Tests.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
   </PropertyGroup>
   <ItemGroup>
@@ -104,9 +104,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Templating\Templating.vbproj">
+    <ProjectReference Include="..\Forge.Templating\Forge.Templating.vbproj">
       <Project>{7178B021-D047-4511-A598-E868860F83F0}</Project>
-      <Name>Templating</Name>
+      <Name>Forge.Templating</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />

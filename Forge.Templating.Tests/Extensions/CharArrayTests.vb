@@ -1,4 +1,4 @@
-﻿Imports Templating.Extensions.CharArray
+﻿Imports Forge.Templating.Extensions.CharArray
 
 Namespace CharArrayTests
 

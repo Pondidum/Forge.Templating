@@ -1,5 +1,5 @@
 ﻿Imports System.Text.RegularExpressions
-Imports Templating.Extensions.CharArray
+Imports Forge.Templating.Extensions.CharArray
 
 Public Class SimpleSearchStrategy
 	Implements ISearchStrategy
