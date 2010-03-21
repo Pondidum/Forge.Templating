@@ -2,22 +2,35 @@
 
 	Sub Main()
 
-		Dim engine As New Templating.Engine(New StandardSearchStrategy)
+		Dim strat As New LoopingSearchStrategy
+		strat.Template = ("{!foreach person in company.people}" & Environment.NewLine & "Hi {person.name}" & Environment.NewLine & Environment.NewLine & "{!end}").ToCharArray
 
-		Using sr As New IO.StreamReader(My.Application.Info.DirectoryPath & "\templates\multi-object-template.txt")
-			engine.Template = sr.ReadToEnd
-		End Using
+		strat.Replacements.Add(New ReflectionReplacementSource(New Company))
 
-		Dim people As New Templating.ReflectionReplacementSource(New Person)
+		Console.Write(strat.Parse)
 
-		Dim animals As New Templating.DictionaryReplacementSource("animals")
-		animals.Add("cat", "jess")
-		animals.Add("name", "jezz")
-
-		Console.WriteLine(engine.Parse(New List(Of IReplacementSource)({people, animals})))
 		Console.ReadKey()
 
 	End Sub
+
+	Private Class Company
+
+		Property People As New List(Of Person)
+
+		Public Sub New()
+			People.Add(New Person("Dave"))
+			People.Add(New Person("Steve"))
+		End Sub
+
+	End Class
+
+	Private Class Person
+		Property Name As String
+
+		Public Sub New(ByVal theName As String)
+			Name = theName
+		End Sub
+	End Class
 
 End Module
 

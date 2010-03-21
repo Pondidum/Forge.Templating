@@ -62,7 +62,10 @@ Public Class StandardSearchStrategy
 
 		Next
 
-		sb.Append(_template.Range(index, _template.Length - index))
+		If index < _template.Length AndAlso _template.Length - index > 0 Then
+			sb.Append(_template.Range(index, _template.Length - index))
+		End If
+
 
 		Return sb.ToString
 
@@ -74,7 +77,11 @@ Public Class StandardSearchStrategy
 			Return Nothing
 		End If
 
-		Dim sources = From s In _replacements Where name.Equals(s.Name, StringComparison.OrdinalIgnoreCase) Select s
+		Dim sources =
+		 From s
+		 In _replacements
+		 Where name.Equals(s.Name, StringComparison.OrdinalIgnoreCase)
+		 Select s
 
 		Return sources.FirstOrDefault
 

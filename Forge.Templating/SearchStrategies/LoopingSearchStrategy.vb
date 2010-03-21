@@ -2,80 +2,112 @@
 Imports Forge.Templating.Extensions.CharArray
 
 Public Class LoopingSearchStrategy
-	Implements ISearchStrategy
+    Implements ISearchStrategy
 
-	'(?ixm)
-	'\{\!
-	'    (?:\s)?
-	'    (?:foreach)
-	'    (?:\s)+
-	'    (?<current>.*)
-	'    (?:\s)+
-	'    (?:in)
-	'    (?:\s)+
-	'    (?<collection>.*)
-	'\}
-	'(?<content>.|[\r\n])*?
-	'\{\!end}
-	Private Const RegexForLoop As String = "(?ixm)\{\!(?:\s)?(?:foreach)(?:\s)+(?<current>.*)(?:\s)+(?:in)(?:\s)+(?<collection>.*)\}(?<content>.|[\r\n])*?\{\!end}"
+    '(?ixms)
+    '\{\!
+    '    (?:\s)?
+    '    (?:foreach)
+    '    (?:\s)+
+    '    (?<current>.*)
+    '    (?:\s)+
+    '    (?:in)
+    '    (?:\s)+
+    '    (?<collection>.*?)
+    '\}
+    '(?<content>.*?)
+    '\{\!end}
+    Private Const RegexForLoop As String = "(?ixms)\{\!(?:\s)?(?:foreach)(?:\s)+(?<current>.*)(?:\s)+(?:in)(?:\s)+(?<collection>.*?)\}(?<content>.*?)\{\!end}"
 
-	Private _template() As Char
-	Private _replacements As IList(Of IReplacementSource)
+    Private _template() As Char
+    Private _replacements As IList(Of IReplacementSource)
 
-	Public Sub New()
-		_replacements = New List(Of IReplacementSource)
-	End Sub
+    Public Sub New()
+        _replacements = New List(Of IReplacementSource)
+    End Sub
 
-	Public WriteOnly Property Template As Char() Implements ISearchStrategy.Template
-		Set(ByVal value As Char())
-			_template = value
-		End Set
-	End Property
+    Public WriteOnly Property Template As Char() Implements ISearchStrategy.Template
+        Set(ByVal value As Char())
+            _template = value
+        End Set
+    End Property
 
-	Public Property Replacements As IList(Of IReplacementSource) Implements ISearchStrategy.Replacements
-		Get
-			Return _replacements
-		End Get
-		Set(ByVal value As IList(Of IReplacementSource))
-			_replacements = value
-		End Set
-	End Property
+    Public Property Replacements As IList(Of IReplacementSource) Implements ISearchStrategy.Replacements
+        Get
+            Return _replacements
+        End Get
+        Set(ByVal value As IList(Of IReplacementSource))
+            _replacements = value
+        End Set
+    End Property
 
-	Public Function Parse() As String Implements ISearchStrategy.Parse
+    Public Function Parse() As String Implements ISearchStrategy.Parse
 
-		If _template Is Nothing OrElse _template.Length = 0 Then
-			Return String.Empty
-		End If
+        If _template Is Nothing OrElse _template.Length = 0 Then
+            Return String.Empty
+        End If
 
-		Dim sb As New Text.StringBuilder
-		Dim index As Integer = 0
-		
-		''first we do all the loops (and one of the parsed replacements might be in the loop too, so pass them in also)
+        Dim sb As New Text.StringBuilder
+        Dim index As Integer = 0
 
-		For Each m As Match In Regex.Matches(_template, RegexForLoop)
+        For Each m As Match In Regex.Matches(New String(_template), RegexForLoop, RegexOptions.Singleline)
 
-			Dim loopVariable As String = m.Groups("current").Value.Trim
-			Dim loopCollection As String = m.Groups("collection").Value.Trim
-			Dim content As String = m.Groups("content").Value.Trim
+            Dim loopParts As New ForLoopParts(m)
 
-			Dim replacement As New StandardSearchStrategy
-			replacement.Template = content.ToArray
-			replacement.Replacements = _replacements
+            Dim strat As New StandardSearchStrategy
+            strat.Template = loopParts.Content
 
-			sb.Append(_template.Range(index, m.Index - index))
+            Dim source As IReplacementSource = SourceFromName(loopParts.Source, loopParts.Collection)
+            Dim collection As IEnumerable = source.GetCollection(loopParts.Collection)
 
-			sb.Append(replacement.Parse)
+            For Each item In collection
 
-			index = m.Index + m.Length
+                strat.Replacements.Clear()
+                strat.Replacements.Add(New ReflectionReplacementSource(item))
+                sb.Append(strat.Parse)
 
-		Next
+            Next
 
-		sb.Append(_template.Range(index, _template.Length - index))
+        Next
 
-		Return sb.ToString
+        Return sb.ToString
 
-	End Function
+    End Function
+
+    Private Function SourceFromName(ByVal sourceName As String, ByVal collectionName As String) As IReplacementSource
+
+        If String.IsNullOrWhiteSpace(collectionName) Then
+            Return Nothing
+        End If
+
+        Return (From irs As IReplacementSource
+                In _replacements
+                Where sourceName.Equals(irs.Name, StringComparison.OrdinalIgnoreCase) And irs.HasCollection(collectionName)
+                Select irs).FirstOrDefault
 
 
+    End Function
+
+    Private Class ForLoopParts
+
+        Property Variable As String
+        Property Collection As String
+        Property Source As String
+        Property Content As Char()
+
+        Public Sub New(ByVal match As Match)
+
+            Variable = match.Groups("current").Value.Trim
+            Content = match.Groups("content").Value.ToCharArray
+            Content = Content.Range(2, Content.Length - 4) 'the first 2 chars and last 2 chars are newlines from the regex
+
+            Dim col As String = match.Groups("collection").Value
+
+            Source = col.Substring(0, col.IndexOf("."))
+            Collection = col.Substring(col.IndexOf(".") + 1)
+
+        End Sub
+
+    End Class
 
 End Class
