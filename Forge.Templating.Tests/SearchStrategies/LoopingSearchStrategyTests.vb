@@ -69,11 +69,24 @@ Public Class LoopingSearchStrategyTests
                           "Hi {person.name} " & Environment.NewLine &
                           "{!end}").ToCharArray
 
-        strat.Replacements.Add(New ReflectionReplacementSource(New Company(New Person("Dave"),
-                                                                           New Person("Steve")
-                                                                           )))
+        Dim collection As New List(Of Person)
+        collection.Add(New Person("Dave"))
+        collection.Add(New Person("Steve"))
+
+        Dim irs As IReplacementSource = MockRepository.GenerateMock(Of IReplacementSource)()
+        irs.Expect(Function(i) i.Name).Return("Company")
+        irs.Expect(Function(i) i.HasCollection("people")).Return(True)
+        irs.Expect(Function(i) i.GetCollection("people")).Return(collection)
+
+        irs.Replay()
+
+        'strat.Replacements.Add(New ReflectionReplacementSource(New Company(New Person("Dave"),
+        '                                                                   New Person("Steve")
+        '                                                                   )))
+        strat.Replacements.Add(irs)
 
         Assert.AreEqual("Hi Dave Hi Steve ", strat.Parse)
+        irs.VerifyAllExpectations()
 
     End Sub
 

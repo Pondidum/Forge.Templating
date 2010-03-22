@@ -51,6 +51,8 @@ Public Class LoopingSearchStrategy
         Dim index As Integer = 0
 
         For Each m As Match In Regex.Matches(New String(_template), RegexForLoop, RegexOptions.Singleline)
+            
+            sb.Append(_template.Range(index, m.Index - index))
 
             Dim loopParts As New ForLoopParts(m)
 
@@ -58,17 +60,28 @@ Public Class LoopingSearchStrategy
             strat.Template = loopParts.Content
 
             Dim source As IReplacementSource = SourceFromName(loopParts.Source, loopParts.Collection)
-            Dim collection As IEnumerable = source.GetCollection(loopParts.Collection)
 
-            For Each item In collection
+            If source IsNot Nothing Then
 
-                strat.Replacements.Clear()
-                strat.Replacements.Add(New ReflectionReplacementSource(item))
-                sb.Append(strat.Parse)
+                Dim collection As IEnumerable = source.GetCollection(loopParts.Collection)
 
-            Next
+                For Each item In collection
+
+                    strat.Replacements.Clear()
+                    strat.Replacements.Add(New ReflectionReplacementSource(item))
+                    sb.Append(strat.Parse)
+
+                Next
+
+            End If
+
+            index = m.Index + m.Length
 
         Next
+
+        If index < _template.Length AndAlso _template.Length - index > 0 Then
+            sb.Append(_template.Range(index, _template.Length - index))
+        End If
 
         Return sb.ToString
 
@@ -80,10 +93,21 @@ Public Class LoopingSearchStrategy
             Return Nothing
         End If
 
-        Return (From irs As IReplacementSource
-                In _replacements
-                Where sourceName.Equals(irs.Name, StringComparison.OrdinalIgnoreCase) And irs.HasCollection(collectionName)
-                Select irs).FirstOrDefault
+        If Not String.IsNullOrWhiteSpace(sourceName) Then
+
+            Return (From irs As IReplacementSource
+                    In _replacements
+                    Where sourceName.Equals(irs.Name, StringComparison.OrdinalIgnoreCase) And irs.HasCollection(collectionName)
+                    Select irs).FirstOrDefault
+
+        Else
+
+            Return (From irs As IReplacementSource
+                    In _replacements
+                    Where irs.HasCollection(collectionName)
+                    Select irs).FirstOrDefault
+
+        End If
 
 
     End Function
@@ -103,8 +127,13 @@ Public Class LoopingSearchStrategy
 
             Dim col As String = match.Groups("collection").Value
 
-            Source = col.Substring(0, col.IndexOf("."))
-            Collection = col.Substring(col.IndexOf(".") + 1)
+            If col.Contains(".") Then
+                Source = col.Substring(0, col.IndexOf("."))
+                Collection = col.Substring(col.IndexOf(".") + 1)
+            Else
+                Source = String.Empty
+                Collection = col
+            End If
 
         End Sub
 
