@@ -50,7 +50,6 @@ Public Class StandardSearchStrategy
             Dim prop As String = m.Groups("property").Value
 
             Dim source As IReplacementSource = SourceByName(name)
-            'TODO: add logging to ISearchStrategy
 
             sb.Append(_template.Range(index, m.Index - index))
 

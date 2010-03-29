@@ -55,9 +55,21 @@ Public Class LoopingSearchStrategyTests
                           "Hi {person.name}" & Environment.NewLine &
                           "{!end}").ToCharArray
 
-        strat.Replacements.Add(New ReflectionReplacementSource(New Company(New Person("Dave"))))
+
+        Dim collection As New List(Of Person)
+        collection.Add(New Person("Dave"))
+
+        Dim irs As IReplacementSource = MockRepository.GenerateMock(Of IReplacementSource)()
+        irs.Expect(Function(i) i.Name).Return("company")
+        irs.Expect(Function(i) i.HasCollection("people")).Return(True)
+        irs.Expect(Function(i) i.GetCollection("people")).Return(Collection)
+
+        irs.Replay()
+
+        strat.Replacements.Add(irs)
 
         Assert.AreEqual("Hi Dave", strat.Parse)
+        irs.VerifyAllExpectations()
 
     End Sub
 
@@ -80,25 +92,12 @@ Public Class LoopingSearchStrategyTests
 
         irs.Replay()
 
-        'strat.Replacements.Add(New ReflectionReplacementSource(New Company(New Person("Dave"),
-        '                                                                   New Person("Steve")
-        '                                                                   )))
         strat.Replacements.Add(irs)
 
         Assert.AreEqual("Hi Dave Hi Steve ", strat.Parse)
         irs.VerifyAllExpectations()
 
     End Sub
-
-    Private Class Company
-
-        Property People As New List(Of Person)
-
-        Public Sub New(ByVal ParamArray employees() As Person)
-            People = New List(Of Person)(employees)
-        End Sub
-
-    End Class
 
     Private Class Person
         Property Name As String
