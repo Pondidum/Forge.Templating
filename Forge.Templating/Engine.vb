@@ -1,35 +1,37 @@
-﻿Public Class Engine
+﻿Imports Forge.Templating.Interfaces
 
-	Private ReadOnly _strategy As ISearchStrategy
+Public Class Engine
 
-	Private _template As Char()
+    Private ReadOnly _strategy As ISearchStrategy
 
-	Public Sub New(ByVal strategy As ISearchStrategy)
-		_strategy = strategy
-	End Sub
+    Private _template As Char()
 
-	Public WriteOnly Property Template As String
-		Set(ByVal value As String)
-			_template = value.ToArray
-		End Set
-	End Property
+    Public Sub New(ByVal strategy As ISearchStrategy)
+        _strategy = strategy
+    End Sub
 
-	Public Function Parse(ByVal replacementSource As IReplacementSource) As String
+    Public WriteOnly Property Template As String
+        Set(ByVal value As String)
+            _template = value.ToArray
+        End Set
+    End Property
 
-		Dim replacements As New List(Of IReplacementSource)
-		replacements.Add(replacementSource)
+    Public Function Parse(ByVal replacementSource As IReplacementSource) As String
 
-		Return Parse(replacements)
+        Dim replacements As New List(Of IReplacementSource)
+        replacements.Add(replacementSource)
 
-	End Function
+        Return Parse(replacements)
 
-	Public Function Parse(ByVal replacementSources As IList(Of IReplacementSource)) As String
+    End Function
 
-		_strategy.Template = _template
-		_strategy.Replacements = replacementSources
+    Public Function Parse(ByVal replacementSources As IList(Of IReplacementSource)) As String
 
-		Return _strategy.Parse
+        _strategy.Template = _template
+        _strategy.Replacements = replacementSources
 
-	End Function
+        Return _strategy.Parse
+
+    End Function
 
 End Class

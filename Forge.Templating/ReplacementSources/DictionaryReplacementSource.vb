@@ -1,72 +1,78 @@
-﻿Public Class DictionaryReplacementSource
-	Implements IReplacementSource
+﻿Imports Forge.Templating.Interfaces
 
-	Private _name As String
-	Private _replacements As IDictionary(Of String, String)
+Namespace ReplacementSources
 
-	Public Sub New()
-		Me.New(String.Empty)
-	End Sub
+    Public Class DictionaryReplacementSource
+        Implements IReplacementSource
 
-	Public Sub New(ByVal name As String)
-		Me.New(name, StringComparer.OrdinalIgnoreCase)
-	End Sub
+        Private _name As String
+        Private _replacements As IDictionary(Of String, String)
 
-	Public Sub New(ByVal comparer As IEqualityComparer(Of String))
-		Me.New(String.Empty, comparer)
-	End Sub
+        Public Sub New()
+            Me.New(String.Empty)
+        End Sub
 
-	Public Sub New(ByVal name As String, ByVal comparer As IEqualityComparer(Of String))
-		_name = name
-		_replacements = New Dictionary(Of String, String)(comparer)
-	End Sub
+        Public Sub New(ByVal name As String)
+            Me.New(name, StringComparer.OrdinalIgnoreCase)
+        End Sub
 
-	Public ReadOnly Property Name As String Implements IReplacementSource.Name
-		Get
-			Return _name
-		End Get
-	End Property
+        Public Sub New(ByVal comparer As IEqualityComparer(Of String))
+            Me.New(String.Empty, comparer)
+        End Sub
 
-	Public ReadOnly Property Items As IDictionary(Of String, String)
-		Get
-			Return _replacements
-		End Get
-	End Property
+        Public Sub New(ByVal name As String, ByVal comparer As IEqualityComparer(Of String))
+            _name = name
+            _replacements = New Dictionary(Of String, String)(comparer)
+        End Sub
 
-	Public Sub Add(ByVal key As String, ByVal value As String)
-		_replacements.Add(key, value)
-	End Sub
+        Public ReadOnly Property Name As String Implements IReplacementSource.Name
+            Get
+                Return _name
+            End Get
+        End Property
 
-	Public Function Remove(ByVal key As String) As Boolean
-		Return _replacements.Remove(key)
-	End Function
+        Public ReadOnly Property Items As IDictionary(Of String, String)
+            Get
+                Return _replacements
+            End Get
+        End Property
 
-	Public Sub Clear()
-		_replacements.Clear()
-	End Sub
+        Public Sub Add(ByVal key As String, ByVal value As String)
+            _replacements.Add(key, value)
+        End Sub
 
-	Public Function GetCollection(ByVal name As String) As System.Collections.IEnumerable Implements IReplacementSource.GetCollection
-		Throw New NotSupportedException("Collections are not supported by the Dictionary Replacement Source")
-	End Function
+        Public Function Remove(ByVal key As String) As Boolean
+            Return _replacements.Remove(key)
+        End Function
 
-	Public Function HasCollection(ByVal name As String) As Boolean Implements IReplacementSource.HasCollection
-		Return False
-	End Function
+        Public Sub Clear()
+            _replacements.Clear()
+        End Sub
 
-	Public Function GetValue(ByVal name As String) As String Implements IReplacementSource.GetValue
+        Public Function GetCollection(ByVal name As String) As System.Collections.IEnumerable Implements IReplacementSource.GetCollection
+            Throw New NotSupportedException("Collections are not supported by the Dictionary Replacement Source")
+        End Function
 
-		If _replacements.ContainsKey(name) Then
-			Return _replacements(name)
-		Else
-			Return String.Empty
-		End If
+        Public Function HasCollection(ByVal name As String) As Boolean Implements IReplacementSource.HasCollection
+            Return False
+        End Function
 
-	End Function
+        Public Function GetValue(ByVal name As String) As String Implements IReplacementSource.GetValue
 
-	Public Function HasValue(ByVal name As String) As Boolean Implements IReplacementSource.HasValue
+            If _replacements.ContainsKey(name) Then
+                Return _replacements(name)
+            Else
+                Return String.Empty
+            End If
 
-		Return _replacements.ContainsKey(name)
+        End Function
 
-	End Function
+        Public Function HasValue(ByVal name As String) As Boolean Implements IReplacementSource.HasValue
 
-End Class
+            Return _replacements.ContainsKey(name)
+
+        End Function
+
+    End Class
+
+End Namespace

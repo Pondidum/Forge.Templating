@@ -1,36 +1,39 @@
-﻿Module mdlMain
+﻿Imports Forge.Templating.SearchStrategies
+Imports Forge.Templating.ReplacementSources
 
-	Sub Main()
+Module mdlMain
 
-		Dim strat As New LoopingSearchStrategy
-		strat.Template = ("{!foreach person in company.people}" & Environment.NewLine & "Hi {person.name}" & Environment.NewLine & Environment.NewLine & "{!end}").ToCharArray
+    Sub Main()
 
-		strat.Replacements.Add(New ReflectionReplacementSource(New Company))
+        Dim strat As New LoopingSearchStrategy
+        strat.Template = ("{!foreach person in company.people}" & Environment.NewLine & "Hi {person.name}" & Environment.NewLine & Environment.NewLine & "{!end}").ToCharArray
 
-		Console.Write(strat.Parse)
+        strat.Replacements.Add(New ReflectionReplacementSource(New Company))
 
-		Console.ReadKey()
+        Console.Write(strat.Parse)
 
-	End Sub
+        Console.ReadKey()
 
-	Private Class Company
+    End Sub
 
-		Property People As New List(Of Person)
+    Private Class Company
 
-		Public Sub New()
-			People.Add(New Person("Dave"))
-			People.Add(New Person("Steve"))
-		End Sub
+        Property People As New List(Of Person)
 
-	End Class
+        Public Sub New()
+            People.Add(New Person("Dave"))
+            People.Add(New Person("Steve"))
+        End Sub
 
-	Private Class Person
-		Property Name As String
+    End Class
 
-		Public Sub New(ByVal theName As String)
-			Name = theName
-		End Sub
-	End Class
+    Private Class Person
+        Property Name As String
+
+        Public Sub New(ByVal theName As String)
+            Name = theName
+        End Sub
+    End Class
 
 End Module
 

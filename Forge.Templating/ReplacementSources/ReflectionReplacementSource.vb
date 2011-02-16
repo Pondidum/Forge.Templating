@@ -1,190 +1,195 @@
 ﻿Imports System.Reflection
+Imports Forge.Templating.Interfaces
 
-Public Class ReflectionReplacementSource
-	Implements IReplacementSource
+Namespace ReplacementSources
 
-	Private ReadOnly SearchFlags As BindingFlags = BindingFlags.Instance Or BindingFlags.Public Or BindingFlags.Static Or BindingFlags.IgnoreCase
-	Public Property SourceObject As Object
+    Public Class ReflectionReplacementSource
+        Implements IReplacementSource
 
-	Public Sub New()
-	End Sub
+        Private ReadOnly SearchFlags As BindingFlags = BindingFlags.Instance Or BindingFlags.Public Or BindingFlags.Static Or BindingFlags.IgnoreCase
+        Public Property SourceObject As Object
 
-	Public Sub New(ByVal source As Object)
-		SourceObject = source
-	End Sub
+        Public Sub New()
+        End Sub
 
-	Public ReadOnly Property Name As String Implements IReplacementSource.Name
-		Get
-			If SourceObject Is Nothing Then Throw New ArgumentNullException("SourceObject")
+        Public Sub New(ByVal source As Object)
+            SourceObject = source
+        End Sub
 
-			Return SourceObject.GetType.Name
-		End Get
-	End Property
+        Public ReadOnly Property Name As String Implements IReplacementSource.Name
+            Get
+                If SourceObject Is Nothing Then Throw New ArgumentNullException("SourceObject")
 
-	Public Function HasCollection(ByVal name As String) As Boolean Implements IReplacementSource.HasCollection
+                Return SourceObject.GetType.Name
+            End Get
+        End Property
 
-		If SourceObject Is Nothing Then Throw New ArgumentNullException("SourceObject")
-		If String.IsNullOrWhiteSpace(name) Then Throw New ArgumentNullException("Name", "The name should be non whitespace")
+        Public Function HasCollection(ByVal name As String) As Boolean Implements IReplacementSource.HasCollection
 
-		Dim type As Type = SourceObject.GetType
+            If SourceObject Is Nothing Then Throw New ArgumentNullException("SourceObject")
+            If String.IsNullOrWhiteSpace(name) Then Throw New ArgumentNullException("Name", "The name should be non whitespace")
 
-		Dim info As MemberInfo = GetMemberInfo(type.GetMember(name, SearchFlags))
+            Dim type As Type = SourceObject.GetType
 
-		If info Is Nothing Then
-			Return Nothing
-		End If
+            Dim info As MemberInfo = GetMemberInfo(type.GetMember(name, SearchFlags))
 
-		Return IsTypeCollection(info)
+            If info Is Nothing Then
+                Return Nothing
+            End If
 
-	End Function
+            Return IsTypeCollection(info)
 
-	Public Function HasValue(ByVal name As String) As Boolean Implements IReplacementSource.HasValue
+        End Function
 
-		If SourceObject Is Nothing Then Throw New ArgumentNullException("SourceObject") ' Return False
-		If String.IsNullOrWhiteSpace(name) Then Throw New ArgumentNullException("Name", "The name should be non whitespace")
+        Public Function HasValue(ByVal name As String) As Boolean Implements IReplacementSource.HasValue
 
-		Dim info() As MemberInfo = SourceObject.GetType.GetMember(name, SearchFlags)
+            If SourceObject Is Nothing Then Throw New ArgumentNullException("SourceObject") ' Return False
+            If String.IsNullOrWhiteSpace(name) Then Throw New ArgumentNullException("Name", "The name should be non whitespace")
 
-		Return GetMemberInfo(info) IsNot Nothing
+            Dim info() As MemberInfo = SourceObject.GetType.GetMember(name, SearchFlags)
 
-	End Function
+            Return GetMemberInfo(info) IsNot Nothing
 
-	Public Function GetValue(ByVal name As String) As String Implements IReplacementSource.GetValue
+        End Function
 
-		If SourceObject Is Nothing Then Throw New ArgumentNullException("SourceObject")
-		If String.IsNullOrWhiteSpace(name) Then Throw New ArgumentNullException("Name", "The name should be non whitespace")
+        Public Function GetValue(ByVal name As String) As String Implements IReplacementSource.GetValue
 
-		Dim mi As MemberInfo = GetMemberInfo(SourceObject.GetType.GetMember(name, SearchFlags))
+            If SourceObject Is Nothing Then Throw New ArgumentNullException("SourceObject")
+            If String.IsNullOrWhiteSpace(name) Then Throw New ArgumentNullException("Name", "The name should be non whitespace")
 
-		If mi Is Nothing Then
-			Return String.Empty
-		End If
+            Dim mi As MemberInfo = GetMemberInfo(SourceObject.GetType.GetMember(name, SearchFlags))
 
-		Select Case mi.MemberType
-			Case MemberTypes.Property
-				Return DirectCast(mi, PropertyInfo).GetValue(SourceObject, Nothing).ToString
+            If mi Is Nothing Then
+                Return String.Empty
+            End If
 
-			Case MemberTypes.Method
-				Return DirectCast(mi, MethodInfo).Invoke(SourceObject, Nothing).ToString
+            Select Case mi.MemberType
+                Case MemberTypes.Property
+                    Return DirectCast(mi, PropertyInfo).GetValue(SourceObject, Nothing).ToString
 
-			Case MemberTypes.Field
-				Return DirectCast(mi, FieldInfo).GetValue(SourceObject).ToString
+                Case MemberTypes.Method
+                    Return DirectCast(mi, MethodInfo).Invoke(SourceObject, Nothing).ToString
 
-		End Select
+                Case MemberTypes.Field
+                    Return DirectCast(mi, FieldInfo).GetValue(SourceObject).ToString
 
-		Return String.Empty
+            End Select
 
-	End Function
+            Return String.Empty
 
-	Public Function GetCollection(ByVal name As String) As IEnumerable Implements IReplacementSource.GetCollection
+        End Function
 
-		If SourceObject Is Nothing Then Throw New ArgumentNullException("SourceObject") ' Return False
-		If String.IsNullOrWhiteSpace(name) Then Throw New ArgumentNullException("Name", "The name should be non whitespace")
+        Public Function GetCollection(ByVal name As String) As IEnumerable Implements IReplacementSource.GetCollection
 
-		Dim mi As MemberInfo = GetMemberInfo(SourceObject.GetType.GetMember(name, SearchFlags))
+            If SourceObject Is Nothing Then Throw New ArgumentNullException("SourceObject") ' Return False
+            If String.IsNullOrWhiteSpace(name) Then Throw New ArgumentNullException("Name", "The name should be non whitespace")
 
-		If mi Is Nothing Then
-			Return Nothing
-		End If
+            Dim mi As MemberInfo = GetMemberInfo(SourceObject.GetType.GetMember(name, SearchFlags))
 
-		If Not IsTypeCollection(mi) Then
-			Return Nothing
-		End If
+            If mi Is Nothing Then
+                Return Nothing
+            End If
 
-		Select Case mi.MemberType
+            If Not IsTypeCollection(mi) Then
+                Return Nothing
+            End If
 
-			Case MemberTypes.Property
-				Return CType(DirectCast(mi, PropertyInfo).GetValue(SourceObject, Nothing), IEnumerable)
+            Select Case mi.MemberType
 
-			Case MemberTypes.Method
-				Return CType(DirectCast(mi, MethodInfo).Invoke(SourceObject, Nothing), IEnumerable)
+                Case MemberTypes.Property
+                    Return CType(DirectCast(mi, PropertyInfo).GetValue(SourceObject, Nothing), IEnumerable)
 
-			Case MemberTypes.Field
-				Return CType(DirectCast(mi, FieldInfo).GetValue(SourceObject), IEnumerable)
+                Case MemberTypes.Method
+                    Return CType(DirectCast(mi, MethodInfo).Invoke(SourceObject, Nothing), IEnumerable)
 
-		End Select
+                Case MemberTypes.Field
+                    Return CType(DirectCast(mi, FieldInfo).GetValue(SourceObject), IEnumerable)
 
-		Return Nothing
+            End Select
 
-	End Function
+            Return Nothing
 
+        End Function
 
-	Private Function IsTypeCollection(ByVal info As MemberInfo) As Boolean
 
-		Select Case info.MemberType
+        Private Function IsTypeCollection(ByVal info As MemberInfo) As Boolean
 
-			Case MemberTypes.Property
-				If IsArrayOrIEnumerable(DirectCast(info, PropertyInfo).PropertyType) Then
-					Return True
-				End If
+            Select Case info.MemberType
 
-			Case MemberTypes.Method
-				If IsArrayOrIEnumerable(DirectCast(info, MethodInfo).ReturnType) Then
-					Return True
-				End If
+                Case MemberTypes.Property
+                    If IsArrayOrIEnumerable(DirectCast(info, PropertyInfo).PropertyType) Then
+                        Return True
+                    End If
 
-			Case MemberTypes.Field
-				If IsArrayOrIEnumerable(DirectCast(info, FieldInfo).FieldType) Then
-					Return True
-				End If
+                Case MemberTypes.Method
+                    If IsArrayOrIEnumerable(DirectCast(info, MethodInfo).ReturnType) Then
+                        Return True
+                    End If
 
-		End Select
+                Case MemberTypes.Field
+                    If IsArrayOrIEnumerable(DirectCast(info, FieldInfo).FieldType) Then
+                        Return True
+                    End If
 
-		Return False
+            End Select
 
-	End Function
+            Return False
 
-	Private Function GetMemberInfo(ByVal info() As MemberInfo) As MemberInfo
+        End Function
 
-		If info.Count <= 0 Then
-			Return Nothing
-		End If
+        Private Function GetMemberInfo(ByVal info() As MemberInfo) As MemberInfo
 
-		For Each mi As MemberInfo In info
+            If info.Count <= 0 Then
+                Return Nothing
+            End If
 
-			Select Case mi.MemberType
+            For Each mi As MemberInfo In info
 
-				Case MemberTypes.Property
+                Select Case mi.MemberType
 
-					If DirectCast(mi, PropertyInfo).CanRead Then
-						Return mi
-					End If
+                    Case MemberTypes.Property
 
-				Case MemberTypes.Method
+                        If DirectCast(mi, PropertyInfo).CanRead Then
+                            Return mi
+                        End If
 
-					Dim method As MethodInfo = DirectCast(mi, MethodInfo)
+                    Case MemberTypes.Method
 
-					If method.ReturnType <> GetType(Void) AndAlso method.GetParameters.Count = 0 Then
-						Return mi
-					End If
+                        Dim method As MethodInfo = DirectCast(mi, MethodInfo)
 
-				Case MemberTypes.Field
+                        If method.ReturnType <> GetType(Void) AndAlso method.GetParameters.Count = 0 Then
+                            Return mi
+                        End If
 
-					Return mi
+                    Case MemberTypes.Field
 
-			End Select
+                        Return mi
 
-		Next
+                End Select
 
-		Return Nothing
+            Next
 
-	End Function
+            Return Nothing
 
-	Private Function IsArrayOrIEnumerable(ByVal type As Type) As Boolean
+        End Function
 
-		If type.IsArray Then
-			Return True
-		End If
+        Private Function IsArrayOrIEnumerable(ByVal type As Type) As Boolean
 
-		If type.GetInterface("IEnumerable") IsNot Nothing Then
-			Return True
-		End If
+            If type.IsArray Then
+                Return True
+            End If
 
-		If type Is GetType(IEnumerable) Then
-			Return True
-		End If
+            If type.GetInterface("IEnumerable") IsNot Nothing Then
+                Return True
+            End If
 
-		Return False
-	End Function
+            If type Is GetType(IEnumerable) Then
+                Return True
+            End If
 
-End Class
+            Return False
+        End Function
+
+    End Class
+
+End Namespace

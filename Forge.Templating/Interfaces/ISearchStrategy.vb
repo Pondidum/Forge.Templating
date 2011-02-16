@@ -1,7 +1,11 @@
-﻿Public Interface ISearchStrategy
+﻿Namespace Interfaces
 
-	WriteOnly Property Template As Char()
-	Property Replacements As IList(Of IReplacementSource)
-	Function Parse() As String
+    Public Interface ISearchStrategy
 
-End Interface
+        WriteOnly Property Template As Char()
+        Property Replacements As IList(Of IReplacementSource)
+        Function Parse() As String
+
+    End Interface
+
+End Namespace

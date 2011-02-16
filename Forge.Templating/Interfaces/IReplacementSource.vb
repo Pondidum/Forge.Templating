@@ -1,11 +1,14 @@
-﻿Public Interface IReplacementSource
+﻿Namespace Interfaces
+    Public Interface IReplacementSource
 
-	ReadOnly Property Name As String
-	
-	Function HasValue(ByVal name As String) As Boolean
-	Function GetValue(ByVal name As String) As String
+        ReadOnly Property Name As String
 
-	Function HasCollection(ByVal name As String) As Boolean
-	Function GetCollection(ByVal name As String) As IEnumerable
+        Function HasValue(ByVal name As String) As Boolean
+        Function GetValue(ByVal name As String) As String
 
-End Interface
+        Function HasCollection(ByVal name As String) As Boolean
+        Function GetCollection(ByVal name As String) As IEnumerable
+
+    End Interface
+
+End Namespace

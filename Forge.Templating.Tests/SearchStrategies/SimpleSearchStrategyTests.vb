@@ -1,65 +1,72 @@
-﻿<TestFixture()>
-Public Class SimpleSearchStrategyTests
+﻿Imports Forge.Templating.SearchStrategies
+Imports Forge.Templating.Interfaces
 
-	<Test()>
-	Public Sub Handles_Blank_Template()
+Namespace SearchStrategies
 
-		Dim replacements As IReplacementSource = MockRepository.GenerateMock(Of IReplacementSource)()
-		Dim simple As New SimpleSearchStrategy
-		simple.Replacements.Add(replacements)
+    <TestFixture()>
+    Public Class SimpleSearchStrategyTests
 
-		Assert.AreEqual(String.Empty, simple.Parse)
+        <Test()>
+        Public Sub Handles_Blank_Template()
 
-	End Sub
+            Dim replacements As IReplacementSource = MockRepository.GenerateMock(Of IReplacementSource)()
+            Dim simple As New SimpleSearchStrategy
+            simple.Replacements.Add(replacements)
 
-	<Test()>
-	Public Sub Handles_Null_Replacment_Source_List()
+            Assert.AreEqual(String.Empty, simple.Parse)
 
-		Dim simple As New SimpleSearchStrategy
-		simple.Template = "template".ToCharArray
-		simple.Replacements = Nothing
+        End Sub
 
-		Assert.AreEqual("template", simple.Parse)
+        <Test()>
+        Public Sub Handles_Null_Replacment_Source_List()
 
-	End Sub
+            Dim simple As New SimpleSearchStrategy
+            simple.Template = "template".ToCharArray
+            simple.Replacements = Nothing
 
-	<Test()>
-	Public Sub Handles_No_Replacement_Source()
+            Assert.AreEqual("template", simple.Parse)
 
-		Dim simple As New SimpleSearchStrategy
-		simple.Template = "Test with {one} replacement".ToCharArray
+        End Sub
 
-		Assert.AreEqual("Test with  replacement", simple.Parse)
+        <Test()>
+        Public Sub Handles_No_Replacement_Source()
 
-	End Sub
+            Dim simple As New SimpleSearchStrategy
+            simple.Template = "Test with {one} replacement".ToCharArray
 
-	<Test()>
-	Public Sub Handles_Empty_Replacement_Source()
+            Assert.AreEqual("Test with  replacement", simple.Parse)
 
-		Dim replacements As IReplacementSource = MockRepository.GenerateMock(Of IReplacementSource)()
-		replacements.Expect(Function(i) i.HasValue("one")).Return(False)
+        End Sub
 
-		Dim simple As New SimpleSearchStrategy
-		simple.Template = "Test with {one} replacement".ToCharArray
-		simple.Replacements.Add(replacements)
+        <Test()>
+        Public Sub Handles_Empty_Replacement_Source()
 
-		Assert.AreEqual("Test with  replacement", simple.Parse)
+            Dim replacements As IReplacementSource = MockRepository.GenerateMock(Of IReplacementSource)()
+            replacements.Expect(Function(i) i.HasValue("one")).Return(False)
 
-	End Sub
+            Dim simple As New SimpleSearchStrategy
+            simple.Template = "Test with {one} replacement".ToCharArray
+            simple.Replacements.Add(replacements)
 
-	<Test()>
-	Public Sub Replaces_Single_Tag_Instance()
+            Assert.AreEqual("Test with  replacement", simple.Parse)
 
-		Dim replacements As IReplacementSource = MockRepository.GenerateMock(Of IReplacementSource)()
-		replacements.Expect(Function(c) c.HasValue("one")).Return(True)
-		replacements.Expect(Function(c) c.GetValue("one")).Return("a cool")
+        End Sub
 
-		Dim simple As New SimpleSearchStrategy
-		simple.Template = "Test with {one} replacement".ToCharArray
-		simple.Replacements.Add(replacements)
+        <Test()>
+        Public Sub Replaces_Single_Tag_Instance()
 
-		Assert.AreEqual("Test with a cool replacement", simple.Parse)
+            Dim replacements As IReplacementSource = MockRepository.GenerateMock(Of IReplacementSource)()
+            replacements.Expect(Function(c) c.HasValue("one")).Return(True)
+            replacements.Expect(Function(c) c.GetValue("one")).Return("a cool")
 
-	End Sub
+            Dim simple As New SimpleSearchStrategy
+            simple.Template = "Test with {one} replacement".ToCharArray
+            simple.Replacements.Add(replacements)
 
-End Class
+            Assert.AreEqual("Test with a cool replacement", simple.Parse)
+
+        End Sub
+
+    End Class
+
+End Namespace

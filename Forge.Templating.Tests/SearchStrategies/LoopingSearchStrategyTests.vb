@@ -1,110 +1,117 @@
-﻿<TestFixture()>
-Public Class LoopingSearchStrategyTests
+﻿Imports Forge.Templating.SearchStrategies
+Imports Forge.Templating.Interfaces
 
-    <Test()>
-    Public Sub Handles_Blank_Template()
+Namespace SearchStrategies
 
-        Dim replacements As IReplacementSource = MockRepository.GenerateMock(Of IReplacementSource)()
-        Dim simple As New LoopingSearchStrategy
-        simple.Replacements.Add(replacements)
+    <TestFixture()>
+    Public Class LoopingSearchStrategyTests
 
-        Assert.AreEqual(String.Empty, simple.Parse)
+        <Test()>
+        Public Sub Handles_Blank_Template()
 
-    End Sub
+            Dim replacements As IReplacementSource = MockRepository.GenerateMock(Of IReplacementSource)()
+            Dim simple As New LoopingSearchStrategy
+            simple.Replacements.Add(replacements)
 
-    <Test()>
-    Public Sub Handles_Null_Replacment_Source_List()
+            Assert.AreEqual(String.Empty, simple.Parse)
 
-        Dim simple As New LoopingSearchStrategy
-        simple.Template = "template".ToCharArray
-        simple.Replacements = Nothing
+        End Sub
 
-        Assert.AreEqual("template", simple.Parse)
+        <Test()>
+        Public Sub Handles_Null_Replacment_Source_List()
 
-    End Sub
+            Dim simple As New LoopingSearchStrategy
+            simple.Template = "template".ToCharArray
+            simple.Replacements = Nothing
 
-    <Test()>
-    Public Sub Handles_No_Replacement_Source()
+            Assert.AreEqual("template", simple.Parse)
 
-        Dim simple As New LoopingSearchStrategy
-        simple.Template = "Test with {!foreach item in collection} test {!end} replacement".ToCharArray
+        End Sub
 
-        Assert.AreEqual("Test with  replacement", simple.Parse)
+        <Test()>
+        Public Sub Handles_No_Replacement_Source()
 
-    End Sub
+            Dim simple As New LoopingSearchStrategy
+            simple.Template = "Test with {!foreach item in collection} test {!end} replacement".ToCharArray
 
-    <Test()>
-    Public Sub Handles_Empty_Replacement_Source()
+            Assert.AreEqual("Test with  replacement", simple.Parse)
 
-        Dim replacements As IReplacementSource = MockRepository.GenerateMock(Of IReplacementSource)()
-        replacements.Expect(Function(i) i.HasValue("one")).Return(False)
+        End Sub
 
-        Dim simple As New LoopingSearchStrategy
-        simple.Template = "Test with {!foreach item in collection} test {!end} replacement".ToCharArray
-        simple.Replacements.Add(replacements)
+        <Test()>
+        Public Sub Handles_Empty_Replacement_Source()
 
-        Assert.AreEqual("Test with  replacement", simple.Parse)
+            Dim replacements As IReplacementSource = MockRepository.GenerateMock(Of IReplacementSource)()
+            replacements.Expect(Function(i) i.HasValue("one")).Return(False)
 
-    End Sub
+            Dim simple As New LoopingSearchStrategy
+            simple.Template = "Test with {!foreach item in collection} test {!end} replacement".ToCharArray
+            simple.Replacements.Add(replacements)
 
-    <Test()>
-    Public Sub Single_iteration_loop_replaces_correctly()
+            Assert.AreEqual("Test with  replacement", simple.Parse)
 
-        Dim strat As New LoopingSearchStrategy
-        strat.Template = ("{!foreach person in company.people}" & Environment.NewLine &
+        End Sub
+
+        <Test()>
+        Public Sub Single_iteration_loop_replaces_correctly()
+
+            Dim strat As New LoopingSearchStrategy
+            strat.Template = ("{!foreach person in company.people}" & Environment.NewLine &
                           "Hi {person.name}" & Environment.NewLine &
                           "{!end}").ToCharArray
 
 
-        Dim collection As New List(Of Person)
-        collection.Add(New Person("Dave"))
+            Dim collection As New List(Of Person)
+            collection.Add(New Person("Dave"))
 
-        Dim irs As IReplacementSource = MockRepository.GenerateMock(Of IReplacementSource)()
-        irs.Expect(Function(i) i.Name).Return("company")
-        irs.Expect(Function(i) i.HasCollection("people")).Return(True)
-        irs.Expect(Function(i) i.GetCollection("people")).Return(Collection)
+            Dim irs As IReplacementSource = MockRepository.GenerateMock(Of IReplacementSource)()
+            irs.Expect(Function(i) i.Name).Return("company")
+            irs.Expect(Function(i) i.HasCollection("people")).Return(True)
+            irs.Expect(Function(i) i.GetCollection("people")).Return(collection)
 
-        irs.Replay()
+            irs.Replay()
 
-        strat.Replacements.Add(irs)
+            strat.Replacements.Add(irs)
 
-        Assert.AreEqual("Hi Dave", strat.Parse)
-        irs.VerifyAllExpectations()
+            Assert.AreEqual("Hi Dave", strat.Parse)
+            irs.VerifyAllExpectations()
 
-    End Sub
+        End Sub
 
-    <Test()>
-    Public Sub Two_iteration_loop_deos_not_add_newlines()
+        <Test()>
+        Public Sub Two_iteration_loop_deos_not_add_newlines()
 
-        Dim strat As New LoopingSearchStrategy
-        strat.Template = ("{!foreach person in company.people}" & Environment.NewLine &
+            Dim strat As New LoopingSearchStrategy
+            strat.Template = ("{!foreach person in company.people}" & Environment.NewLine &
                           "Hi {person.name} " & Environment.NewLine &
                           "{!end}").ToCharArray
 
-        Dim collection As New List(Of Person)
-        collection.Add(New Person("Dave"))
-        collection.Add(New Person("Steve"))
+            Dim collection As New List(Of Person)
+            collection.Add(New Person("Dave"))
+            collection.Add(New Person("Steve"))
 
-        Dim irs As IReplacementSource = MockRepository.GenerateMock(Of IReplacementSource)()
-        irs.Expect(Function(i) i.Name).Return("Company")
-        irs.Expect(Function(i) i.HasCollection("people")).Return(True)
-        irs.Expect(Function(i) i.GetCollection("people")).Return(collection)
+            Dim irs As IReplacementSource = MockRepository.GenerateMock(Of IReplacementSource)()
+            irs.Expect(Function(i) i.Name).Return("Company")
+            irs.Expect(Function(i) i.HasCollection("people")).Return(True)
+            irs.Expect(Function(i) i.GetCollection("people")).Return(collection)
 
-        irs.Replay()
+            irs.Replay()
 
-        strat.Replacements.Add(irs)
+            strat.Replacements.Add(irs)
 
-        Assert.AreEqual("Hi Dave Hi Steve ", strat.Parse)
-        irs.VerifyAllExpectations()
+            Assert.AreEqual("Hi Dave Hi Steve ", strat.Parse)
+            irs.VerifyAllExpectations()
 
-    End Sub
-
-    Private Class Person
-        Property Name As String
-
-        Public Sub New(ByVal theName As String)
-            Name = theName
         End Sub
+
+        Private Class Person
+            Property Name As String
+
+            Public Sub New(ByVal theName As String)
+                Name = theName
+            End Sub
+        End Class
+
     End Class
 
-End Class
+End Namespace

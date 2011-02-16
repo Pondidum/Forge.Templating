@@ -1,629 +1,635 @@
-﻿<TestFixture()>
-Public Class ReflectionReplacementSourceTests
+﻿Imports Forge.Templating.ReplacementSources
 
-	<Test()>
-	Public Sub Source_Sets_Via_Constructor()
+Namespace ReplacementSources
 
-		Dim prop As New PropertyOnly
-		Dim src As New ReflectionReplacementSource(prop)
+    <TestFixture()>
+    Public Class ReflectionReplacementSourceTests
 
-		Assert.AreEqual(prop, src.SourceObject)
+        <Test()>
+        Public Sub Source_Sets_Via_Constructor()
 
-	End Sub
+            Dim prop As New PropertyOnly
+            Dim src As New ReflectionReplacementSource(prop)
 
-	<Test()>
-	<ExpectedException(GetType(ArgumentNullException))>
-	Public Sub Name_Checks_For_Null_Source_Object()
+            Assert.AreEqual(prop, src.SourceObject)
 
-		Dim src As New ReflectionReplacementSource
+        End Sub
 
-		Dim name As String = src.Name
+        <Test()>
+    <ExpectedException(GetType(ArgumentNullException))>
+        Public Sub Name_Checks_For_Null_Source_Object()
 
-	End Sub
+            Dim src As New ReflectionReplacementSource
 
-	<Test()>
-	Public Sub Name_Returns_Friendly_Class_Name()
+            Dim name As String = src.Name
 
-		Dim src As New ReflectionReplacementSource(New PropertyOnly)
+        End Sub
 
-		Assert.AreEqual("PropertyOnly", src.Name)
+        <Test()>
+        Public Sub Name_Returns_Friendly_Class_Name()
 
-	End Sub
+            Dim src As New ReflectionReplacementSource(New PropertyOnly)
 
-	<Test()>
-	<ExpectedException(GetType(ArgumentNullException))>
-	Public Sub Has_Member_Checks_For_Null_Source_Object()
+            Assert.AreEqual("PropertyOnly", src.Name)
 
-		Dim parser As New ReflectionReplacementSource
-		parser.HasValue("test")
+        End Sub
 
-	End Sub
+        <Test()>
+    <ExpectedException(GetType(ArgumentNullException))>
+        Public Sub Has_Member_Checks_For_Null_Source_Object()
 
-	<Test()>
-	<ExpectedException(GetType(ArgumentNullException))>
-	Public Sub Has_Member_Checks_For_Null_Member_Name()
+            Dim parser As New ReflectionReplacementSource
+            parser.HasValue("test")
 
-		Dim parser As New ReflectionReplacementSource
-		parser.SourceObject = New PropertyOnly
+        End Sub
 
-		parser.HasValue("")
+        <Test()>
+    <ExpectedException(GetType(ArgumentNullException))>
+        Public Sub Has_Member_Checks_For_Null_Member_Name()
 
-	End Sub
+            Dim parser As New ReflectionReplacementSource
+            parser.SourceObject = New PropertyOnly
 
-	<Test()>
-	Public Sub Has_Member_Can_Find_Property_Proper_Cased()
+            parser.HasValue("")
 
-		Dim parser As New ReflectionReplacementSource
-		parser.SourceObject = New PropertyOnly
+        End Sub
 
-		Assert.IsTrue(parser.HasValue("StringValue"))
+        <Test()>
+        Public Sub Has_Member_Can_Find_Property_Proper_Cased()
 
-	End Sub
+            Dim parser As New ReflectionReplacementSource
+            parser.SourceObject = New PropertyOnly
 
-	<Test()>
-	Public Sub Has_Member_Can_Find_Property_Miss_Cased()
+            Assert.IsTrue(parser.HasValue("StringValue"))
 
-		Dim parser As New ReflectionReplacementSource
-		parser.SourceObject = New PropertyOnly
+        End Sub
 
-		Assert.IsTrue(parser.HasValue("STRINGVALUE"))
+        <Test()>
+        Public Sub Has_Member_Can_Find_Property_Miss_Cased()
 
-	End Sub
+            Dim parser As New ReflectionReplacementSource
+            parser.SourceObject = New PropertyOnly
 
-	<Test()>
-	Public Sub Has_Member_Cannot_Find_Write_Only_Property()
+            Assert.IsTrue(parser.HasValue("STRINGVALUE"))
 
-		Dim parser As New ReflectionReplacementSource
-		parser.SourceObject = New WriteOnlyPropertyOnly
+        End Sub
 
-		Assert.IsFalse(parser.HasValue("StringValue"))
+        <Test()>
+        Public Sub Has_Member_Cannot_Find_Write_Only_Property()
 
-	End Sub
+            Dim parser As New ReflectionReplacementSource
+            parser.SourceObject = New WriteOnlyPropertyOnly
 
-	<Test()>
-	Public Sub Has_Member_Can_Find_Method_With_Return_Value_Proper_Cased()
+            Assert.IsFalse(parser.HasValue("StringValue"))
 
-		Dim parser As New ReflectionReplacementSource
-		parser.SourceObject = New FunctionsOnly
+        End Sub
 
-		Assert.IsTrue(parser.HasValue("IntegerValue"))
+        <Test()>
+        Public Sub Has_Member_Can_Find_Method_With_Return_Value_Proper_Cased()
 
-	End Sub
+            Dim parser As New ReflectionReplacementSource
+            parser.SourceObject = New FunctionsOnly
 
-	<Test()>
-	Public Sub Has_Member_Can_Find_Method_With_Return_Value_Miss_Cased()
+            Assert.IsTrue(parser.HasValue("IntegerValue"))
 
-		Dim parser As New ReflectionReplacementSource
-		parser.SourceObject = New FunctionsOnly
+        End Sub
 
-		Assert.IsTrue(parser.HasValue("INTEGERVALUE"))
+        <Test()>
+        Public Sub Has_Member_Can_Find_Method_With_Return_Value_Miss_Cased()
 
-	End Sub
+            Dim parser As New ReflectionReplacementSource
+            parser.SourceObject = New FunctionsOnly
 
-	<Test()>
-	Public Sub Has_Member_Cannot_Find_Method_Without_Return_Value_Proper_Cased()
+            Assert.IsTrue(parser.HasValue("INTEGERVALUE"))
 
-		Dim parser As New ReflectionReplacementSource
-		parser.SourceObject = New SubroutineOnly
+        End Sub
 
-		Assert.IsFalse(parser.HasValue("StringValue"))
+        <Test()>
+        Public Sub Has_Member_Cannot_Find_Method_Without_Return_Value_Proper_Cased()
 
-	End Sub
+            Dim parser As New ReflectionReplacementSource
+            parser.SourceObject = New SubroutineOnly
 
-	<Test()>
-	Public Sub Has_Member_Cannot_Find_Method_Without_Return_Value_Miss_Cased()
+            Assert.IsFalse(parser.HasValue("StringValue"))
 
-		Dim parser As New ReflectionReplacementSource
-		parser.SourceObject = New SubroutineOnly
+        End Sub
 
-		Assert.IsFalse(parser.HasValue("STRINGVALUE"))
+        <Test()>
+        Public Sub Has_Member_Cannot_Find_Method_Without_Return_Value_Miss_Cased()
 
-	End Sub
+            Dim parser As New ReflectionReplacementSource
+            parser.SourceObject = New SubroutineOnly
 
-	<Test()>
-	Public Sub Has_Member_Can_Find_Field_Proper_Cased()
+            Assert.IsFalse(parser.HasValue("STRINGVALUE"))
 
-		Dim parser As New ReflectionReplacementSource
-		parser.SourceObject = New FieldOnly
+        End Sub
 
-		Assert.IsTrue(parser.HasValue("StringValue"))
+        <Test()>
+        Public Sub Has_Member_Can_Find_Field_Proper_Cased()
 
-	End Sub
+            Dim parser As New ReflectionReplacementSource
+            parser.SourceObject = New FieldOnly
 
-	<Test()>
-	Public Sub Has_Member_Can_Find_Field_Miss_Cased()
+            Assert.IsTrue(parser.HasValue("StringValue"))
 
-		Dim parser As New ReflectionReplacementSource
-		parser.SourceObject = New FieldOnly
+        End Sub
 
-		Assert.IsTrue(parser.HasValue("STRINGVALUE"))
+        <Test()>
+        Public Sub Has_Member_Can_Find_Field_Miss_Cased()
 
-	End Sub
+            Dim parser As New ReflectionReplacementSource
+            parser.SourceObject = New FieldOnly
 
-	'
-	'
-	'
+            Assert.IsTrue(parser.HasValue("STRINGVALUE"))
 
-	<Test()>
-	<ExpectedException(GetType(ArgumentNullException))>
-	Public Sub Is_Collection_Checks_For_Null_Source_Object()
+        End Sub
 
-		Dim parser As New ReflectionReplacementSource
-		parser.HasCollection("test")
+        '
+        '
+        '
 
-	End Sub
+        <Test()>
+    <ExpectedException(GetType(ArgumentNullException))>
+        Public Sub Is_Collection_Checks_For_Null_Source_Object()
 
-	<Test()>
-	<ExpectedException(GetType(ArgumentNullException))>
-	Public Sub Is_Collection_Checks_For_Null_Member_Name()
+            Dim parser As New ReflectionReplacementSource
+            parser.HasCollection("test")
 
-		Dim parser As New ReflectionReplacementSource
-		parser.SourceObject = New PropertyOnly
+        End Sub
 
-		parser.HasCollection("")
+        <Test()>
+    <ExpectedException(GetType(ArgumentNullException))>
+        Public Sub Is_Collection_Checks_For_Null_Member_Name()
 
-	End Sub
+            Dim parser As New ReflectionReplacementSource
+            parser.SourceObject = New PropertyOnly
 
-	<Test()>
-	Public Sub Is_Collection_Checks_For_Arrays()
+            parser.HasCollection("")
 
-		Dim parser As New ReflectionReplacementSource
-		parser.SourceObject = New ArrayTests
+        End Sub
 
-		Assert.IsTrue(parser.HasCollection("ArrayValue"))
+        <Test()>
+        Public Sub Is_Collection_Checks_For_Arrays()
 
-	End Sub
+            Dim parser As New ReflectionReplacementSource
+            parser.SourceObject = New ArrayTests
 
-	<Test()>
-	Public Sub Is_Collection_Checks_For_IEnumerable()
+            Assert.IsTrue(parser.HasCollection("ArrayValue"))
 
-		Dim parser As New ReflectionReplacementSource
-		parser.SourceObject = New ArrayTests
+        End Sub
 
-		Assert.IsTrue(parser.HasCollection("IEnumerableValue"))
+        <Test()>
+        Public Sub Is_Collection_Checks_For_IEnumerable()
 
-	End Sub
+            Dim parser As New ReflectionReplacementSource
+            parser.SourceObject = New ArrayTests
 
-	<Test()>
-	Public Sub Is_Collection_Checks_For_IEnumerable_Inheritance()
+            Assert.IsTrue(parser.HasCollection("IEnumerableValue"))
 
-		Dim parser As New ReflectionReplacementSource
-		parser.SourceObject = New ArrayTests
+        End Sub
 
-		Assert.IsTrue(parser.HasCollection("ListValue"))
+        <Test()>
+        Public Sub Is_Collection_Checks_For_IEnumerable_Inheritance()
 
-	End Sub
+            Dim parser As New ReflectionReplacementSource
+            parser.SourceObject = New ArrayTests
 
-	<Test()>
-	Public Sub Is_Collection_Checks_For_Dictionaries()
+            Assert.IsTrue(parser.HasCollection("ListValue"))
 
-		Dim parser As New ReflectionReplacementSource
-		parser.SourceObject = New ArrayTests
+        End Sub
 
-		Assert.IsTrue(parser.HasCollection("DictionaryValue"))
+        <Test()>
+        Public Sub Is_Collection_Checks_For_Dictionaries()
 
-	End Sub
+            Dim parser As New ReflectionReplacementSource
+            parser.SourceObject = New ArrayTests
 
-	<Test()>
-	Public Sub Is_Collection_Can_Find_Properties_Proper_Cased()
+            Assert.IsTrue(parser.HasCollection("DictionaryValue"))
 
-		Dim parser As New ReflectionReplacementSource
-		parser.SourceObject = New ArrayTests
+        End Sub
 
-		Assert.IsTrue(parser.HasCollection("ArrayValue"))
+        <Test()>
+        Public Sub Is_Collection_Can_Find_Properties_Proper_Cased()
 
-	End Sub
+            Dim parser As New ReflectionReplacementSource
+            parser.SourceObject = New ArrayTests
 
-	<Test()>
-	Public Sub Is_Collection_Can_Find_Properties_Miss_Cased()
+            Assert.IsTrue(parser.HasCollection("ArrayValue"))
 
-		Dim parser As New ReflectionReplacementSource
-		parser.SourceObject = New ArrayTests
+        End Sub
 
-		Assert.IsTrue(parser.HasCollection("ARRAYVALUE"))
+        <Test()>
+        Public Sub Is_Collection_Can_Find_Properties_Miss_Cased()
 
-	End Sub
+            Dim parser As New ReflectionReplacementSource
+            parser.SourceObject = New ArrayTests
 
-	<Test()>
-	Public Sub Is_Collection_Can_Find_Methods_Proper_Cased()
+            Assert.IsTrue(parser.HasCollection("ARRAYVALUE"))
 
-		Dim parser As New ReflectionReplacementSource
-		parser.SourceObject = New ArrayTests
+        End Sub
 
-		Assert.IsTrue(parser.HasCollection("ArrayFunction"))
+        <Test()>
+        Public Sub Is_Collection_Can_Find_Methods_Proper_Cased()
 
-	End Sub
+            Dim parser As New ReflectionReplacementSource
+            parser.SourceObject = New ArrayTests
 
-	<Test()>
-	Public Sub Is_Collection_Can_Find_Methods_Miss_Cased()
+            Assert.IsTrue(parser.HasCollection("ArrayFunction"))
 
-		Dim parser As New ReflectionReplacementSource
-		parser.SourceObject = New ArrayTests
+        End Sub
 
-		Assert.IsTrue(parser.HasCollection("ARRAYFUNCTION"))
+        <Test()>
+        Public Sub Is_Collection_Can_Find_Methods_Miss_Cased()
 
-	End Sub
+            Dim parser As New ReflectionReplacementSource
+            parser.SourceObject = New ArrayTests
 
-	<Test()>
-	Public Sub Is_Collection_Can_Find_Fields_Proper_Cased()
+            Assert.IsTrue(parser.HasCollection("ARRAYFUNCTION"))
 
-		Dim parser As New ReflectionReplacementSource
-		parser.SourceObject = New ArrayTests
+        End Sub
 
-		Assert.IsTrue(parser.HasCollection("ArrayField"))
+        <Test()>
+        Public Sub Is_Collection_Can_Find_Fields_Proper_Cased()
 
-	End Sub
+            Dim parser As New ReflectionReplacementSource
+            parser.SourceObject = New ArrayTests
 
-	<Test()>
-	Public Sub Is_Collection_Can_Find_Fields_Miss_Cased()
+            Assert.IsTrue(parser.HasCollection("ArrayField"))
 
-		Dim parser As New ReflectionReplacementSource
-		parser.SourceObject = New ArrayTests
+        End Sub
 
-		Assert.IsTrue(parser.HasCollection("ARRAYFIELD"))
+        <Test()>
+        Public Sub Is_Collection_Can_Find_Fields_Miss_Cased()
 
-	End Sub
+            Dim parser As New ReflectionReplacementSource
+            parser.SourceObject = New ArrayTests
 
-	<Test()>
-	Public Sub Is_Collection_Does_Not_Have_False_Positives()
+            Assert.IsTrue(parser.HasCollection("ARRAYFIELD"))
 
-		Dim parser As New ReflectionReplacementSource
-		parser.SourceObject = New ArrayTests
+        End Sub
 
-		Assert.IsFalse(parser.HasCollection("IntegerValue"))
+        <Test()>
+        Public Sub Is_Collection_Does_Not_Have_False_Positives()
 
-	End Sub
+            Dim parser As New ReflectionReplacementSource
+            parser.SourceObject = New ArrayTests
 
-	<Test()>
-	Public Sub Is_Collection_Has_Fallback_Value()
+            Assert.IsFalse(parser.HasCollection("IntegerValue"))
 
-		Dim parser As New ReflectionReplacementSource
-		parser.SourceObject = New ArrayTests
+        End Sub
 
-		Assert.IsFalse(parser.HasCollection("wfwefe"))
+        <Test()>
+        Public Sub Is_Collection_Has_Fallback_Value()
 
-	End Sub
+            Dim parser As New ReflectionReplacementSource
+            parser.SourceObject = New ArrayTests
 
-	<Test()>
-	Public Sub Is_Collection_Checks_For_Methods_With_No_Return_Value()
+            Assert.IsFalse(parser.HasCollection("wfwefe"))
 
-		Dim parser As New ReflectionReplacementSource
-		parser.SourceObject = New SubroutineOnly
+        End Sub
 
-		Assert.IsFalse(parser.HasCollection("StringValue"))
+        <Test()>
+        Public Sub Is_Collection_Checks_For_Methods_With_No_Return_Value()
 
-	End Sub
+            Dim parser As New ReflectionReplacementSource
+            parser.SourceObject = New SubroutineOnly
 
-	<Test()>
-	Public Sub Is_Collection_Checks_For_Unsupported_Types()
+            Assert.IsFalse(parser.HasCollection("StringValue"))
 
-		Dim parser As New ReflectionReplacementSource
-		parser.SourceObject = New SubClassOnly
+        End Sub
 
-		Assert.IsFalse(parser.HasCollection("SubTest"))
+        <Test()>
+        Public Sub Is_Collection_Checks_For_Unsupported_Types()
 
-	End Sub
+            Dim parser As New ReflectionReplacementSource
+            parser.SourceObject = New SubClassOnly
 
-	<Test()>
-	Public Sub Is_Collection_Checks_For_Non_Array_Methods()
+            Assert.IsFalse(parser.HasCollection("SubTest"))
 
-		Dim parser As New ReflectionReplacementSource
-		parser.SourceObject = New FunctionsOnly
+        End Sub
 
-		Assert.IsFalse(parser.HasCollection("IntegerValue"))
+        <Test()>
+        Public Sub Is_Collection_Checks_For_Non_Array_Methods()
 
-	End Sub
+            Dim parser As New ReflectionReplacementSource
+            parser.SourceObject = New FunctionsOnly
 
-	'
-	'
-	'
+            Assert.IsFalse(parser.HasCollection("IntegerValue"))
 
-	<Test()>
-	<ExpectedException(GetType(ArgumentNullException))>
-	Public Sub Get_Value_Checks_For_Null_Source_Object()
+        End Sub
 
-		Dim parser As New ReflectionReplacementSource
-		parser.GetValue("test")
+        '
+        '
+        '
 
-	End Sub
+        <Test()>
+    <ExpectedException(GetType(ArgumentNullException))>
+        Public Sub Get_Value_Checks_For_Null_Source_Object()
 
-	<Test()>
-	<ExpectedException(GetType(ArgumentNullException))>
-	Public Sub Get_Value_Checks_For_Null_Member_Name()
+            Dim parser As New ReflectionReplacementSource
+            parser.GetValue("test")
 
-		Dim parser As New ReflectionReplacementSource
-		parser.SourceObject = New FunctionsOnly
+        End Sub
 
-		parser.GetValue("")
+        <Test()>
+    <ExpectedException(GetType(ArgumentNullException))>
+        Public Sub Get_Value_Checks_For_Null_Member_Name()
 
-	End Sub
+            Dim parser As New ReflectionReplacementSource
+            parser.SourceObject = New FunctionsOnly
 
-	<Test()>
-	Public Sub Get_Value_Returns_Value_From_Property()
+            parser.GetValue("")
 
-		Dim parser As New ReflectionReplacementSource
-		parser.SourceObject = New PropertyOnly With {.StringValue = "Test Value"}
+        End Sub
 
-		Assert.AreEqual("Test Value", parser.GetValue("StringValue"))
+        <Test()>
+        Public Sub Get_Value_Returns_Value_From_Property()
 
-	End Sub
+            Dim parser As New ReflectionReplacementSource
+            parser.SourceObject = New PropertyOnly With {.StringValue = "Test Value"}
 
-	<Test()>
-	Public Sub Get_Value_Returns_Value_From_Readonly_Property()
+            Assert.AreEqual("Test Value", parser.GetValue("StringValue"))
 
-		Dim parser As New ReflectionReplacementSource
-		parser.SourceObject = New ReadonlyPropertyOnly
+        End Sub
 
-		Assert.AreEqual("Test Value", parser.GetValue("StringValue"))
+        <Test()>
+        Public Sub Get_Value_Returns_Value_From_Readonly_Property()
 
-	End Sub
+            Dim parser As New ReflectionReplacementSource
+            parser.SourceObject = New ReadonlyPropertyOnly
 
-	<Test()>
-	Public Sub Get_Value_Returns_Nothing_From_Writeonly_Property()
+            Assert.AreEqual("Test Value", parser.GetValue("StringValue"))
 
-		Dim parser As New ReflectionReplacementSource
-		parser.SourceObject = New WriteOnlyPropertyOnly
+        End Sub
 
-		Assert.AreEqual(String.Empty, parser.GetValue("StringValue"))
+        <Test()>
+        Public Sub Get_Value_Returns_Nothing_From_Writeonly_Property()
 
-	End Sub
+            Dim parser As New ReflectionReplacementSource
+            parser.SourceObject = New WriteOnlyPropertyOnly
 
-	<Test()>
-	Public Sub Get_Value_Returns_From_Function()
+            Assert.AreEqual(String.Empty, parser.GetValue("StringValue"))
 
-		Dim parser As New ReflectionReplacementSource
-		parser.SourceObject = New FunctionsOnly
+        End Sub
 
-		Assert.AreEqual("1234", parser.GetValue("IntegerValue"))
+        <Test()>
+        Public Sub Get_Value_Returns_From_Function()
 
-	End Sub
+            Dim parser As New ReflectionReplacementSource
+            parser.SourceObject = New FunctionsOnly
 
-	<Test()>
-	Public Sub Get_Value_Returns_Nothing_From_Subroutine()
+            Assert.AreEqual("1234", parser.GetValue("IntegerValue"))
 
-		Dim parser As New ReflectionReplacementSource
-		parser.SourceObject = New SubroutineOnly
+        End Sub
 
-		Assert.AreEqual(String.Empty, parser.GetValue("IntegerValue"))
+        <Test()>
+        Public Sub Get_Value_Returns_Nothing_From_Subroutine()
 
-	End Sub
+            Dim parser As New ReflectionReplacementSource
+            parser.SourceObject = New SubroutineOnly
 
-	<Test()>
-	Public Sub Get_Value_Returns_From_Field()
+            Assert.AreEqual(String.Empty, parser.GetValue("IntegerValue"))
 
-		Dim parser As New ReflectionReplacementSource
-		parser.SourceObject = New FieldOnly
+        End Sub
 
-		Assert.AreEqual("Test", parser.GetValue("StringValue"))
+        <Test()>
+        Public Sub Get_Value_Returns_From_Field()
 
-	End Sub
+            Dim parser As New ReflectionReplacementSource
+            parser.SourceObject = New FieldOnly
 
-	<Test()>
-	Public Sub Get_Value_Checks_For_SubClasses()
+            Assert.AreEqual("Test", parser.GetValue("StringValue"))
 
-		Dim parser As New ReflectionReplacementSource
-		parser.SourceObject = New SubClassOnly
+        End Sub
 
-		Assert.AreEqual(String.Empty, parser.GetValue("SubTest"))
+        <Test()>
+        Public Sub Get_Value_Checks_For_SubClasses()
 
-	End Sub
+            Dim parser As New ReflectionReplacementSource
+            parser.SourceObject = New SubClassOnly
 
-	<Test()>
-	Public Sub Get_Value_Returns_To_String_For_An_Object()
+            Assert.AreEqual(String.Empty, parser.GetValue("SubTest"))
 
-		Dim parser As New ReflectionReplacementSource
-		parser.SourceObject = New SubClassProperties
+        End Sub
 
-		Assert.AreEqual("OverriddenToString", parser.GetValue("Overridden"))
-		Assert.AreEqual(GetType(SubClassProperties.NoOverrides).FullName, parser.GetValue("Subbed"))
+        <Test()>
+        Public Sub Get_Value_Returns_To_String_For_An_Object()
 
-	End Sub
+            Dim parser As New ReflectionReplacementSource
+            parser.SourceObject = New SubClassProperties
 
-	'
-	'
-	'
+            Assert.AreEqual("OverriddenToString", parser.GetValue("Overridden"))
+            Assert.AreEqual(GetType(SubClassProperties.NoOverrides).FullName, parser.GetValue("Subbed"))
 
-	<Test()>
-	<ExpectedException(GetType(ArgumentNullException))>
-	Public Sub Get_Collection_Checks_For_Null_Source_Object()
+        End Sub
 
-		Dim parser As New ReflectionReplacementSource
+        '
+        '
+        '
 
-		parser.GetCollection("tetton")
+        <Test()>
+    <ExpectedException(GetType(ArgumentNullException))>
+        Public Sub Get_Collection_Checks_For_Null_Source_Object()
 
-	End Sub
+            Dim parser As New ReflectionReplacementSource
 
-	<Test()>
-	<ExpectedException(GetType(ArgumentNullException))>
-	Public Sub Get_Collection_Checks_For_Null_Member_Name()
+            parser.GetCollection("tetton")
 
-		Dim parser As New ReflectionReplacementSource
-		parser.SourceObject = New FunctionsOnly
+        End Sub
 
-		parser.GetCollection("")
+        <Test()>
+    <ExpectedException(GetType(ArgumentNullException))>
+        Public Sub Get_Collection_Checks_For_Null_Member_Name()
 
-	End Sub
+            Dim parser As New ReflectionReplacementSource
+            parser.SourceObject = New FunctionsOnly
 
-	<Test()>
-	Public Sub Get_Collection_Handles_Empty_Object()
+            parser.GetCollection("")
 
-		Dim src As New ReflectionReplacementSource
-		src.SourceObject = New EmptyObject
+        End Sub
 
-		Assert.AreEqual(Nothing, src.GetCollection("test"))
+        <Test()>
+        Public Sub Get_Collection_Handles_Empty_Object()
 
-	End Sub
+            Dim src As New ReflectionReplacementSource
+            src.SourceObject = New EmptyObject
 
-	<Test()>
-	Public Sub Get_Collection_Handles_Non_Collection_Property()
+            Assert.AreEqual(Nothing, src.GetCollection("test"))
 
-		Dim src As New ReflectionReplacementSource
-		src.SourceObject = New FunctionsOnly
+        End Sub
 
-		Assert.AreEqual(Nothing, src.GetCollection("IntegerValue"))
+        <Test()>
+        Public Sub Get_Collection_Handles_Non_Collection_Property()
 
-	End Sub
-	<Test()>
-	Public Sub Get_Collection_Returns_From_Property()
+            Dim src As New ReflectionReplacementSource
+            src.SourceObject = New FunctionsOnly
 
-		Dim parser As New ReflectionReplacementSource
-		parser.SourceObject = New PropertyOnly
+            Assert.AreEqual(Nothing, src.GetCollection("IntegerValue"))
 
-		Dim result As IEnumerable = parser.GetCollection("StringValue")
+        End Sub
+        <Test()>
+        Public Sub Get_Collection_Returns_From_Property()
 
-		Assert.IsNotNull(result)
-		Assert.IsTrue(result.GetEnumerator.MoveNext)
+            Dim parser As New ReflectionReplacementSource
+            parser.SourceObject = New PropertyOnly
 
-	End Sub
+            Dim result As IEnumerable = parser.GetCollection("StringValue")
 
-	<Test()>
-	Public Sub Get_Collection_Returns_From_Readonly_Property()
+            Assert.IsNotNull(result)
+            Assert.IsTrue(result.GetEnumerator.MoveNext)
 
-		Dim parser As New ReflectionReplacementSource
-		parser.SourceObject = New ReadonlyPropertyOnly
+        End Sub
 
-		Dim result As IEnumerable = parser.GetCollection("StringValue")
+        <Test()>
+        Public Sub Get_Collection_Returns_From_Readonly_Property()
 
-		Assert.IsNotNull(result)
-		Assert.IsTrue(result.GetEnumerator.MoveNext)
+            Dim parser As New ReflectionReplacementSource
+            parser.SourceObject = New ReadonlyPropertyOnly
 
-	End Sub
+            Dim result As IEnumerable = parser.GetCollection("StringValue")
 
-	<Test()>
-	Public Sub Get_Collection_Returns_From_Function()
+            Assert.IsNotNull(result)
+            Assert.IsTrue(result.GetEnumerator.MoveNext)
 
-		Dim parser As New ReflectionReplacementSource
-		parser.SourceObject = New FunctionsOnly
+        End Sub
 
-		Dim result As IEnumerable = parser.GetCollection("StringValue")
+        <Test()>
+        Public Sub Get_Collection_Returns_From_Function()
 
-		Assert.IsNotNull(result)
-		Assert.IsTrue(result.GetEnumerator.MoveNext)
+            Dim parser As New ReflectionReplacementSource
+            parser.SourceObject = New FunctionsOnly
 
-	End Sub
+            Dim result As IEnumerable = parser.GetCollection("StringValue")
 
-	<Test()>
-	Public Sub Get_Collection_Returns_From_Fields()
+            Assert.IsNotNull(result)
+            Assert.IsTrue(result.GetEnumerator.MoveNext)
 
-		Dim parser As New ReflectionReplacementSource
-		parser.SourceObject = New FieldOnly
+        End Sub
 
-		Dim result As IEnumerable = parser.GetCollection("StringValue")
+        <Test()>
+        Public Sub Get_Collection_Returns_From_Fields()
 
-		Assert.IsNotNull(result)
-		Assert.IsTrue(result.GetEnumerator.MoveNext)
+            Dim parser As New ReflectionReplacementSource
+            parser.SourceObject = New FieldOnly
 
-	End Sub
+            Dim result As IEnumerable = parser.GetCollection("StringValue")
 
-	'
-	' Test Classes  - dont want to Mock them due to the set of tests are testing reflection
-	'
+            Assert.IsNotNull(result)
+            Assert.IsTrue(result.GetEnumerator.MoveNext)
 
-	Private Class PropertyOnly
-		Public Property StringValue As String = "Test Value"
-	End Class
+        End Sub
 
-	Private Class ReadonlyPropertyOnly
-		Public ReadOnly Property StringValue As String
-			Get
-				Return "Test Value"
-			End Get
-		End Property
-	End Class
+        '
+        ' Test Classes  - dont want to Mock them due to the set of tests are testing reflection
+        '
 
-	Private Class WriteOnlyPropertyOnly
-		Public WriteOnly Property StringValue As String
-			Set(ByVal value As String)
-				'...
-			End Set
-		End Property
-	End Class
+        Private Class PropertyOnly
+            Public Property StringValue As String = "Test Value"
+        End Class
 
-	Private Class FunctionsOnly
+        Private Class ReadonlyPropertyOnly
+            Public ReadOnly Property StringValue As String
+                Get
+                    Return "Test Value"
+                End Get
+            End Property
+        End Class
 
-		Public Function IntegerValue() As Integer
-			Return 1234
-		End Function
+        Private Class WriteOnlyPropertyOnly
+            Public WriteOnly Property StringValue As String
+                Set(ByVal value As String)
+                    '...
+                End Set
+            End Property
+        End Class
 
-		Public Function StringValue() As String
-			Return "Test Value"
-		End Function
+        Private Class FunctionsOnly
 
-	End Class
+            Public Function IntegerValue() As Integer
+                Return 1234
+            End Function
 
-	Private Class FunctionOverloadeded
+            Public Function StringValue() As String
+                Return "Test Value"
+            End Function
 
-		Public Function StringValue() As String
-			Return "noparams"
-		End Function
+        End Class
 
-		Public Function StringValue(ByVal param As Integer) As String
-			Return "params"
-		End Function
-	End Class
+        Private Class FunctionOverloadeded
 
-	Private Class SubroutineOnly
-		Public Sub StringValue()
-			'...
-		End Sub
-	End Class
+            Public Function StringValue() As String
+                Return "noparams"
+            End Function
 
-	Private Class FieldOnly
-		Public StringValue As String = "Test"
-	End Class
+            Public Function StringValue(ByVal param As Integer) As String
+                Return "params"
+            End Function
+        End Class
 
-	Private Class PropertyAndFunction
-		Public Property StringValue As String = "property"
-		Public Function StringFunction() As String
-			Return "function"
-		End Function
-	End Class
+        Private Class SubroutineOnly
+            Public Sub StringValue()
+                '...
+            End Sub
+        End Class
 
-	Private Class ArrayTests
+        Private Class FieldOnly
+            Public StringValue As String = "Test"
+        End Class
 
-		Public Property ArrayValue As Integer()
-		Public Property IEnumerableValue As IEnumerable = New List(Of Integer)
-		Public Property ListValue As New List(Of Integer)
-		Public Property DictionaryValue As New Dictionary(Of String, String)
+        Private Class PropertyAndFunction
+            Public Property StringValue As String = "property"
+            Public Function StringFunction() As String
+                Return "function"
+            End Function
+        End Class
 
-		Public Function ArrayFunction() As Integer()
-			Return New Integer() {19, 23, 4}
-		End Function
+        Private Class ArrayTests
 
-		Public ArrayField As Integer()
+            Public Property ArrayValue As Integer()
+            Public Property IEnumerableValue As IEnumerable = New List(Of Integer)
+            Public Property ListValue As New List(Of Integer)
+            Public Property DictionaryValue As New Dictionary(Of String, String)
 
-		'flase positives etc
-		Public Property IntegerValue As Integer
-	End Class
+            Public Function ArrayFunction() As Integer()
+                Return New Integer() {19, 23, 4}
+            End Function
 
-	Private Class SubClassOnly
+            Public ArrayField As Integer()
 
-		Public Class SubTest
-		End Class
+            'flase positives etc
+            Public Property IntegerValue As Integer
+        End Class
 
-	End Class
+        Private Class SubClassOnly
 
-	Private Class SubClassProperties
+            Public Class SubTest
+            End Class
 
-		Public Property Subbed As New NoOverrides
-		Public Property Overridden As New ToStringClass
+        End Class
 
-		Public Class ToStringClass
+        Private Class SubClassProperties
 
-			Public Overrides Function ToString() As String
-				Return "OverriddenToString"
-			End Function
+            Public Property Subbed As New NoOverrides
+            Public Property Overridden As New ToStringClass
 
-		End Class
+            Public Class ToStringClass
 
-		Public Class NoOverrides
+                Public Overrides Function ToString() As String
+                    Return "OverriddenToString"
+                End Function
 
-		End Class
+            End Class
 
-	End Class
+            Public Class NoOverrides
 
-	Private Class EmptyObject
+            End Class
 
-	End Class
+        End Class
 
-End Class
+        Private Class EmptyObject
+
+        End Class
+
+    End Class
+
+End Namespace

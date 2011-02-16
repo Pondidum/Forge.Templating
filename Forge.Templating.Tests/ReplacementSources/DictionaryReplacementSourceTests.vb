@@ -1,162 +1,168 @@
-﻿<TestFixture()>
-Public Class DictionaryReplacementSourceTests
+﻿Imports Forge.Templating.ReplacementSources
 
-	<Test()>
-	Public Sub Returns_Collection_Name()
+Namespace ReplacementSources
 
-		Dim src As New DictionaryReplacementSource("test")
+    <TestFixture()>
+    Public Class DictionaryReplacementSourceTests
 
-		Assert.AreEqual("test", src.Name)
+        <Test()>
+        Public Sub Returns_Collection_Name()
 
-	End Sub
+            Dim src As New DictionaryReplacementSource("test")
 
-	<Test()>
-	Public Sub Can_Add_And_Remove_Items()
+            Assert.AreEqual("test", src.Name)
 
-		Dim parser As New DictionaryReplacementSource
+        End Sub
 
-		parser.Add("test", "string")
+        <Test()>
+        Public Sub Can_Add_And_Remove_Items()
 
-		Assert.IsTrue(parser.Items.ContainsKey("test"))
+            Dim parser As New DictionaryReplacementSource
 
-		parser.Remove("test")
+            parser.Add("test", "string")
 
-		Assert.IsFalse(parser.Items.ContainsKey("test"))
+            Assert.IsTrue(parser.Items.ContainsKey("test"))
 
-	End Sub
+            parser.Remove("test")
 
-	<Test()>
-	Public Sub Can_Clear_Replacements()
+            Assert.IsFalse(parser.Items.ContainsKey("test"))
 
-		Dim parser As New DictionaryReplacementSource
-		parser.Add("test", "string")
-		parser.Add("item", "integer")
+        End Sub
 
-		Assert.AreEqual(2, parser.Items.Count)
+        <Test()>
+        Public Sub Can_Clear_Replacements()
 
-		parser.Clear()
+            Dim parser As New DictionaryReplacementSource
+            parser.Add("test", "string")
+            parser.Add("item", "integer")
 
-		Assert.AreEqual(0, parser.Items.Count)
+            Assert.AreEqual(2, parser.Items.Count)
 
-	End Sub
+            parser.Clear()
 
-	<Test()>
-	Public Sub Item_Collection_Can_Be_Modified_By_Reference()
+            Assert.AreEqual(0, parser.Items.Count)
 
-		Dim parser As New DictionaryReplacementSource
-		Dim dict As IDictionary(Of String, String) = parser.Items
+        End Sub
 
-		dict.Add("Key", "val")
+        <Test()>
+        Public Sub Item_Collection_Can_Be_Modified_By_Reference()
 
-		Assert.AreEqual(1, parser.Items.Count)
+            Dim parser As New DictionaryReplacementSource
+            Dim dict As IDictionary(Of String, String) = parser.Items
 
-		dict.Clear()
+            dict.Add("Key", "val")
 
-		Assert.AreEqual(0, parser.Items.Count)
+            Assert.AreEqual(1, parser.Items.Count)
 
+            dict.Clear()
 
-	End Sub
+            Assert.AreEqual(0, parser.Items.Count)
 
-	<Test()>
-	Public Sub Insensitive_Finds_Key_For_Proper_Cased_Key()
 
-		Dim parser As New DictionaryReplacementSource
-		parser.Add("test", "string")
+        End Sub
 
-		Assert.IsTrue(parser.HasValue("test"))
+        <Test()>
+        Public Sub Insensitive_Finds_Key_For_Proper_Cased_Key()
 
-	End Sub
+            Dim parser As New DictionaryReplacementSource
+            parser.Add("test", "string")
 
-	<Test()>
-	Public Sub Insensitive_Finds_Key_For_Miss_Cased_Key()
+            Assert.IsTrue(parser.HasValue("test"))
 
-		Dim parser As New DictionaryReplacementSource
-		parser.Add("test", "string")
+        End Sub
 
-		Assert.IsTrue(parser.HasValue("TesT"))
+        <Test()>
+        Public Sub Insensitive_Finds_Key_For_Miss_Cased_Key()
 
-	End Sub
+            Dim parser As New DictionaryReplacementSource
+            parser.Add("test", "string")
 
-	<Test()>
-	Public Sub Sensitive_Finds_Key_For_Proper_Cased_Key()
+            Assert.IsTrue(parser.HasValue("TesT"))
 
-		Dim parser As New DictionaryReplacementSource(StringComparer.CurrentCulture)
-		parser.Add("test", "string")
+        End Sub
 
-		Assert.IsTrue(parser.HasValue("test"))
+        <Test()>
+        Public Sub Sensitive_Finds_Key_For_Proper_Cased_Key()
 
-	End Sub
+            Dim parser As New DictionaryReplacementSource(StringComparer.CurrentCulture)
+            parser.Add("test", "string")
 
-	<Test()>
-	Public Sub Sensitive_Doesnt_Find_Key_For_Miss_Cased_Key()
+            Assert.IsTrue(parser.HasValue("test"))
 
-		Dim parser As New DictionaryReplacementSource(StringComparer.CurrentCulture)
-		parser.Add("test", "string")
+        End Sub
 
-		Assert.IsFalse(parser.HasValue("TesT"))
+        <Test()>
+        Public Sub Sensitive_Doesnt_Find_Key_For_Miss_Cased_Key()
 
-	End Sub
+            Dim parser As New DictionaryReplacementSource(StringComparer.CurrentCulture)
+            parser.Add("test", "string")
 
-	<Test()>
-	<ExpectedException(GetType(NotSupportedException))>
-	Public Sub Does_Not_Support_Collections()
+            Assert.IsFalse(parser.HasValue("TesT"))
 
-		Dim parser As New DictionaryReplacementSource
+        End Sub
 
-		Assert.IsFalse(parser.HasCollection("test"))
+        <Test()>
+    <ExpectedException(GetType(NotSupportedException))>
+        Public Sub Does_Not_Support_Collections()
 
-		parser.GetCollection("test")
+            Dim parser As New DictionaryReplacementSource
 
-	End Sub
+            Assert.IsFalse(parser.HasCollection("test"))
 
-	<Test()>
-	Public Sub Insensitive_Gets_Value_Proper_Cased()
+            parser.GetCollection("test")
 
-		Dim parser As New DictionaryReplacementSource
-		parser.Add("string", "value")
+        End Sub
 
-		Assert.AreEqual("value", parser.GetValue("string"))
+        <Test()>
+        Public Sub Insensitive_Gets_Value_Proper_Cased()
 
-	End Sub
+            Dim parser As New DictionaryReplacementSource
+            parser.Add("string", "value")
 
-	<Test()>
-	Public Sub Insensitive_Gets_Value_Miss_Cased()
+            Assert.AreEqual("value", parser.GetValue("string"))
 
-		Dim parser As New DictionaryReplacementSource
-		parser.Add("string", "value")
+        End Sub
 
-		Assert.AreEqual("value", parser.GetValue("STRing"))
+        <Test()>
+        Public Sub Insensitive_Gets_Value_Miss_Cased()
 
-	End Sub
+            Dim parser As New DictionaryReplacementSource
+            parser.Add("string", "value")
 
-	<Test()>
-	Public Sub Insensitive_Gets_Default_Value()
+            Assert.AreEqual("value", parser.GetValue("STRing"))
 
-		Dim parser As New DictionaryReplacementSource
+        End Sub
 
-		Assert.AreEqual("", parser.GetValue("orgno"))
+        <Test()>
+        Public Sub Insensitive_Gets_Default_Value()
 
-	End Sub
+            Dim parser As New DictionaryReplacementSource
 
-	<Test()>
-	Public Sub Sensitive_Gets_Value_Proper_Cased()
+            Assert.AreEqual("", parser.GetValue("orgno"))
 
-		Dim parser As New DictionaryReplacementSource(StringComparer.CurrentCulture)
-		parser.Add("test", "value")
+        End Sub
 
-		Assert.AreEqual("value", parser.GetValue("test"))
+        <Test()>
+        Public Sub Sensitive_Gets_Value_Proper_Cased()
 
-	End Sub
+            Dim parser As New DictionaryReplacementSource(StringComparer.CurrentCulture)
+            parser.Add("test", "value")
 
-	<Test()>
-	Public Sub Sensitive_Gets_Default_Value_Miss_Cased()
+            Assert.AreEqual("value", parser.GetValue("test"))
 
+        End Sub
 
-		Dim parser As New DictionaryReplacementSource(StringComparer.CurrentCulture)
-		parser.Add("test", "value")
+        <Test()>
+        Public Sub Sensitive_Gets_Default_Value_Miss_Cased()
 
-		Assert.AreEqual("", parser.GetValue("TEST"))
 
-	End Sub
+            Dim parser As New DictionaryReplacementSource(StringComparer.CurrentCulture)
+            parser.Add("test", "value")
 
-End Class
+            Assert.AreEqual("", parser.GetValue("TEST"))
+
+        End Sub
+
+    End Class
+
+End Namespace
