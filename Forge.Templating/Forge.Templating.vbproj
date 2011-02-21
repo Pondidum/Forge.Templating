@@ -87,6 +87,7 @@
     <Compile Include="ReplacementSources\ReflectionReplacementSource.vb" />
     <Compile Include="SearchStrategies\SimpleSearchStrategy.vb" />
     <Compile Include="SearchStrategies\StandardSearchStrategy.vb" />
+    <Compile Include="SearchStrategies\TokenSearchStrategy.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="My Project\Resources.resx">
