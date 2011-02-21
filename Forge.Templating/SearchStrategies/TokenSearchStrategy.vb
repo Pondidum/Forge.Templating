@@ -38,10 +38,44 @@ Namespace SearchStrategies
         Private MustInherit Class Tag
 
             Public MustOverride ReadOnly Property Pattern() As String
+            Public MustOverride ReadOnly Property Type() As TagTypes
+
+            Public Enum TagTypes
+                Content
+                Value
+                ParentBegining
+                ParentEnd
+            End Enum
 
         End Class
 
         Private Class MatchData
+
+            Private ReadOnly _match As Match
+            Private ReadOnly _type As Tag.TagTypes
+
+            Public Sub New(ByVal match As Match, ByVal type As Tag.TagTypes)
+                _match = match
+                _type = type
+            End Sub
+
+            Public ReadOnly Property Index As Integer
+                Get
+                    Return _match.Index
+                End Get
+            End Property
+
+            Public ReadOnly Property Length As Integer
+                Get
+                    Return _match.Length
+                End Get
+            End Property
+
+            Public ReadOnly Property Type As Tag.TagTypes
+                Get
+                    Return _type
+                End Get
+            End Property
 
         End Class
 
@@ -79,23 +113,31 @@ Namespace SearchStrategies
 
             End Sub
 
-            Private Function GetAllTags() As IEnumerable(Of Match)
+            Private Function GetAllTags() As IEnumerable(Of MatchData)
 
-                Dim allMatches As New List(Of Match)
+                Dim allMatches As New List(Of MatchData)
 
-                '_tags.ForEach(Sub(t) allMatches.AddRange(Regex.Matches(_template, t.Pattern).Cast(Of Match)))
+                For Each tag In _tags
+
+                    For Each match As Match In Regex.Matches(_template, tag.Pattern)
+
+                        allMatches.Add(New MatchData(match, tag.Type))
+
+                    Next
+
+                Next
 
                 Dim ordered = allMatches.OrderBy(Function(m) m.Index)
 
                 If Not ValidateMatches(ordered) Then
-                    Return New List(Of Match)
+                    Return New List(Of MatchData)
                 End If
 
                 Return ordered.ToList()
 
             End Function
 
-            Private Function ValidateMatches(ByVal source As IEnumerable(Of Match)) As Boolean
+            Private Function ValidateMatches(ByVal source As IEnumerable(Of MatchData)) As Boolean
 
                 'i have a nice extension method for this, but no yield in vb and, i dont want external 
                 'dependencies, and i'm not in the mood to convert this to c# atm.
