@@ -1,6 +1,7 @@
 ﻿Imports System.Runtime.CompilerServices
 Imports Forge.Templating.Interfaces
 Imports System.Text.RegularExpressions
+Imports Forge.Templating.SearchStrategies.Token
 
 Namespace SearchStrategies
 
@@ -32,52 +33,48 @@ Namespace SearchStrategies
         Public Function Parse() As String Implements ISearchStrategy.Parse
 
 
+            Dim parser = New Matcher(_template)
+            parser.AddTags(New ValueTag())
+            parser.AddTags(New ForLoopTag())
 
         End Function
 
-        Private MustInherit Class Tag
 
-            Public MustOverride ReadOnly Property Pattern() As String
-            Public MustOverride ReadOnly Property Type() As TagTypes
 
-            Public Enum TagTypes
-                Content
-                Value
-                ParentBegining
-                ParentEnd
-            End Enum
 
-        End Class
 
-        Private Class MatchData
+        'Private Class Node
 
-            Private ReadOnly _match As Match
-            Private ReadOnly _type As Tag.TagTypes
+        '    Public Sub New()
 
-            Public Sub New(ByVal match As Match, ByVal type As Tag.TagTypes)
-                _match = match
-                _type = type
-            End Sub
+        '    End Sub
 
-            Public ReadOnly Property Index As Integer
-                Get
-                    Return _match.Index
-                End Get
-            End Property
+        '    Public Sub New(ByVal type As Tag.TagTypes, ByVal value As String)
 
-            Public ReadOnly Property Length As Integer
-                Get
-                    Return _match.Length
-                End Get
-            End Property
+        '    End Sub
 
-            Public ReadOnly Property Type As Tag.TagTypes
-                Get
-                    Return _type
-                End Get
-            End Property
+        '    Public Property Parent As Node
+        '    Public Property Children As List(Of Node)
+        '    Public Property Value As String
 
-        End Class
+        '    Public Sub AddChild(ByVal node As Node)
+
+        '        If node Is Nothing Then Throw New ArgumentNullException("node")
+
+        '        Children.Add(node)
+        '        node.Parent = Me
+
+        '    End Sub
+
+        'End Class
+
+        'Private Class ContentNode
+        '    Inherits Node
+
+        '    Public Sub New(ByVal value As String)
+
+        '    End Sub
+        'End Class
 
         Private Class Matcher
 
@@ -106,14 +103,12 @@ Namespace SearchStrategies
 
             Public Sub Process()
 
-                Dim tags = GetAllTags()
-
-
+                Dim matches = GetAllTagMatches()
 
 
             End Sub
 
-            Private Function GetAllTags() As IEnumerable(Of MatchData)
+            Private Function GetAllTagMatches() As IEnumerable(Of MatchData)
 
                 Dim allMatches As New List(Of MatchData)
 
@@ -121,7 +116,7 @@ Namespace SearchStrategies
 
                     For Each match As Match In Regex.Matches(_template, tag.Pattern)
 
-                        allMatches.Add(New MatchData(match, tag.Type))
+                        allMatches.Add(New MatchData(match, tag))
 
                     Next
 

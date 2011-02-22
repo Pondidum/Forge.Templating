@@ -20,8 +20,8 @@ Namespace SearchStrategies
         '    (?<collection>.*?)
         '\}
         '(?<content>.*?)
-        '\{\!end}
-        Private Const RegexForLoop As String = "(?ixms)\{\!(?:\s)?(?:foreach)(?:\s)+(?<current>.*)(?:\s)+(?:in)(?:\s)+(?<collection>.*?)\}(?<content>.*?)\{\!end}"
+        '\{\!end\}
+        Private Const RegexForLoop As String = "(?ixms)\{\!(?:\s)?(?:foreach)(?:\s)+(?<current>.*)(?:\s)+(?:in)(?:\s)+(?<collection>.*?)\}(?<content>.*?)\{\!end\}"
 
         Private _template() As Char
         Private _replacements As IList(Of IReplacementSource)
