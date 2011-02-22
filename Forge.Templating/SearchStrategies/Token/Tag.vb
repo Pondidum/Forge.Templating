@@ -25,7 +25,7 @@
         Public Enum TagTypes
             Content
             Value
-            Parent
+            Composite
         End Enum
 
     End Class

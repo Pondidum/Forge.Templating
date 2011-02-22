@@ -19,7 +19,7 @@
         Private Const RegexForLoop As String = "(?ixms)\{\!(?:\s)?(?:foreach)(?:\s)+(?<current>.*)(?:\s)+(?:in)(?:\s)+(?<collection>.*?)\}(?<content>.*?)\{\!end\}"
 
         Public Sub New()
-            MyBase.New(TagTypes.ParentBegining, RegexForLoop)
+            MyBase.New(TagTypes.Composite, RegexForLoop)
         End Sub
 
     End Class
