@@ -1,4 +1,5 @@
-﻿Imports System.Runtime.CompilerServices
+﻿
+Imports Forge.Templating.Extensions
 Imports Forge.Templating.Interfaces
 Imports System.Text.RegularExpressions
 Imports Forge.Templating.SearchStrategies.Token
@@ -31,7 +32,6 @@ Namespace SearchStrategies
         End Property
 
         Public Function Parse() As String Implements ISearchStrategy.Parse
-
 
             Dim parser = New Matcher(_template)
             parser.AddTags(New ValueTag())
@@ -122,7 +122,16 @@ Namespace SearchStrategies
 
                 Next
 
-                Dim ordered = allMatches.OrderBy(Function(m) m.Index)
+                Dim ordered = allMatches.OrderBy(Function(m) m.Index).ToList()
+
+                Dim index = ordered.First().Index
+                If index <> 0 Then
+                    ordered.Insert(0, New MatchData(0, ordered.First().Index, _template.Range(0, index), New  )
+                End If
+
+                For i As Integer = 1 To ordered.Count - 1
+
+                Next
 
                 If Not ValidateMatches(ordered) Then
                     Return New List(Of MatchData)
@@ -167,23 +176,6 @@ Namespace SearchStrategies
 
 
     End Class
-
-    Friend Module Extensions
-
-        <Extension()>
-        Public Function Compare(Of TSource)(ByVal source As IEnumerable(Of TSource), ByVal selector As Func(Of TSource, TSource, Boolean)) As Boolean
-
-            Using iterator = source.GetEnumerator()
-
-                If iterator.MoveNext() Then
-
-                End If
-
-            End Using
-
-        End Function
-
-    End Module
 
 
 End Namespace

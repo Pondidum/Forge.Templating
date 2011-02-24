@@ -65,6 +65,7 @@
   <ItemGroup>
     <Compile Include="Engine.vb" />
     <Compile Include="Extensions\CharArray.vb" />
+    <Compile Include="Extensions\StringExtensions.vb" />
     <Compile Include="Interfaces\IReplacementSource.vb" />
     <Compile Include="Interfaces\ISearchStrategy.vb" />
     <Compile Include="ReplacementSources\DictionaryReplacementSource.vb" />
@@ -88,6 +89,10 @@
     <Compile Include="SearchStrategies\SimpleSearchStrategy.vb" />
     <Compile Include="SearchStrategies\StandardSearchStrategy.vb" />
     <Compile Include="SearchStrategies\TokenSearchStrategy.vb" />
+    <Compile Include="SearchStrategies\Token\ForLoopTag.vb" />
+    <Compile Include="SearchStrategies\Token\MatchData.vb" />
+    <Compile Include="SearchStrategies\Token\Tag.vb" />
+    <Compile Include="SearchStrategies\Token\ValueTag.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="My Project\Resources.resx">
