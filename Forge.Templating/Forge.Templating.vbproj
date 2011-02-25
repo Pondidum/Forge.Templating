@@ -92,6 +92,7 @@
     <Compile Include="SearchStrategies\Token\ForLoopTag.vb" />
     <Compile Include="SearchStrategies\Token\MatchData.vb" />
     <Compile Include="SearchStrategies\Token\Tag.vb" />
+    <Compile Include="SearchStrategies\Token\TemplateParser.vb" />
     <Compile Include="SearchStrategies\Token\ValueTag.vb" />
   </ItemGroup>
   <ItemGroup>
