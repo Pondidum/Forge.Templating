@@ -1,8 +1,7 @@
-﻿
-Imports Forge.Templating.Extensions
+﻿Imports Forge.Templating.Extensions
 Imports Forge.Templating.Interfaces
-Imports System.Text.RegularExpressions
 Imports Forge.Templating.SearchStrategies.Token
+Imports System.Text.RegularExpressions
 
 Namespace SearchStrategies
 
@@ -39,47 +38,10 @@ Namespace SearchStrategies
 
         End Function
 
-
-
-
-
-        'Private Class Node
-
-        '    Public Sub New()
-
-        '    End Sub
-
-        '    Public Sub New(ByVal type As Tag.TagTypes, ByVal value As String)
-
-        '    End Sub
-
-        '    Public Property Parent As Node
-        '    Public Property Children As List(Of Node)
-        '    Public Property Value As String
-
-        '    Public Sub AddChild(ByVal node As Node)
-
-        '        If node Is Nothing Then Throw New ArgumentNullException("node")
-
-        '        Children.Add(node)
-        '        node.Parent = Me
-
-        '    End Sub
-
-        'End Class
-
-        'Private Class ContentNode
-        '    Inherits Node
-
-        '    Public Sub New(ByVal value As String)
-
-        '    End Sub
-        'End Class
-
         Private Class Matcher
 
             Private ReadOnly _template As String
-            Private ReadOnly _tags As List(Of Tag)
+            Private ReadOnly _tags As Dictionary(Of Tag.TagTypes, Tag)
             Private _results As List(Of MatchData)
 
 
@@ -98,21 +60,47 @@ Namespace SearchStrategies
             End Property
 
             Public Sub AddTags(ByVal ParamArray tags() As Tag)
-                _tags.AddRange(tags)
+                Array.ForEach(tags, Sub(t) _tags.Add(t.Type, t))
             End Sub
 
             Public Sub Process()
 
                 Dim matches = GetAllTagMatches()
-
+                Dim tree = CreateTree(matches)
 
             End Sub
+
+            Private Function CreateTree(ByVal collection As IEnumerable(Of MatchData)) As MatchData
+
+                Dim root = New MatchData(0, _template.Length, String.Empty, _tags(Tag.TagTypes.Composite))
+                Dim parent = root
+
+                For Each match In Matches
+
+                    While match.Index > (parent.Index + parent.Length)
+                        parent = parent.Parent
+                    End While
+
+                    parent.AddChild(match)
+
+                    If match.Tag.Type = Tag.TagTypes.Composite Then
+
+                        parent.AddChild(match)
+                        parent = match
+
+                    End If
+
+                Next
+
+                Return root
+
+            End Function
 
             Private Function GetAllTagMatches() As IEnumerable(Of MatchData)
 
                 Dim allMatches As New List(Of MatchData)
 
-                For Each tag In _tags
+                For Each tag In _tags.Values
 
                     For Each match As Match In Regex.Matches(_template, tag.Pattern)
 
@@ -124,12 +112,32 @@ Namespace SearchStrategies
 
                 Dim ordered = allMatches.OrderBy(Function(m) m.Index).ToList()
 
-                Dim index = ordered.First().Index
-                If index <> 0 Then
-                    ordered.Insert(0, New MatchData(0, ordered.First().Index, _template.Range(0, index), New  )
-                End If
+                'Dim index = ordered.First().Index
+
+                'If index <> 0 Then
+                '    ordered.Insert(0, New MatchData(0,
+                '                                    ordered.First().Index,
+                '                                    _template.Range(0, index),
+                '                                    _tags(Tag.TagTypes.Content)))
+                'End If
+
+                'Dim x =
+                Dim prev = New MatchData(0, 0, String.Empty, Nothing)
 
                 For i As Integer = 1 To ordered.Count - 1
+
+                    Dim current = ordered(i)
+                    Dim length = current.Index - (prev.Index + prev.Length)
+
+                    If length > 0 Then
+
+                        ordered.Insert(i, New MatchData(prev.Index + prev.Length,
+                                                        length,
+                                                        _template.Range(prev.Index + prev.Length, length),
+                                                        _tags(Tag.TagTypes.Content)))
+                    End If
+
+                    prev = current
 
                 Next
 

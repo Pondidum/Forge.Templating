@@ -44,6 +44,18 @@ Namespace SearchStrategies.Token
             End Get
         End Property
 
+        Public Property Parent As MatchData
+        Public Property Children As List(Of MatchData)
+
+        Public Sub AddChild(ByVal child As MatchData)
+
+            If child Is Nothing Then Throw New ArgumentNullException("child")
+
+            Children.Add(child)
+            child.Parent = Me
+
+        End Sub
+
     End Class
 
 End Namespace
