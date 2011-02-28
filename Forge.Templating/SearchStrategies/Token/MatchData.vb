@@ -6,10 +6,10 @@ Namespace SearchStrategies.Token
 
         Private ReadOnly _matchIndex As Integer
         Private ReadOnly _matchLength As Integer
-        Private ReadOnly _matchValue As String
+        Private ReadOnly _matchValue As Char()
         Private ReadOnly _tag As Tag
 
-        Public Sub New(ByVal matchIndex As Integer, ByVal matchLength As Integer, ByVal matchValue As String, ByVal tag As Tag)
+        Public Sub New(ByVal matchIndex As Integer, ByVal matchLength As Integer, ByVal matchValue As Char(), ByVal tag As Tag)
             _matchIndex = matchIndex
             _matchLength = matchLength
             _matchValue = matchValue
@@ -17,8 +17,11 @@ Namespace SearchStrategies.Token
         End Sub
 
         Public Sub New(ByVal match As Match, ByVal tag As Tag)
-            Me.New(match.Index, match.Length, match.Value, tag)
+            Me.New(match.Index, match.Length, match.Value.ToArray(), tag)
         End Sub
+
+        Public Property Parent As MatchData
+        Public Property Children As List(Of MatchData)
 
         Public ReadOnly Property Index As Integer
             Get
@@ -38,14 +41,11 @@ Namespace SearchStrategies.Token
             End Get
         End Property
 
-        Public ReadOnly Property Value As String
+        Public ReadOnly Property Value As Char()
             Get
                 Return _matchValue
             End Get
         End Property
-
-        Public Property Parent As MatchData
-        Public Property Children As List(Of MatchData)
 
         Public Sub AddChild(ByVal child As MatchData)
 
@@ -55,6 +55,10 @@ Namespace SearchStrategies.Token
             child.Parent = Me
 
         End Sub
+
+        Public Function Render() As Char()
+            Return _tag.Render(_matchValue)
+        End Function
 
     End Class
 

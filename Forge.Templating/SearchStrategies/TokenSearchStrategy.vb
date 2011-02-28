@@ -30,10 +30,23 @@ Namespace SearchStrategies
         Public Function Parse() As String Implements ISearchStrategy.Parse
 
             Dim parser = New TemplateParser(_template)
-            parser.AddTags(New ValueTag())
-            parser.AddTags(New ForLoopTag())
+            parser.AddTags(New ValueTag(_replacements))
+            parser.AddTags(New ForLoopTag(_replacements))
+
+            Dim tree = parser.Process()
+
 
         End Function
+
+        'Private Function CreateOutput(ByVal current As MatchData) As Char()
+
+        '    Dim result = New List(Of Char)
+
+        '    If current.Tag.Type = Tag.TagTypes.Content Then
+        '        result.AddRange(current.Value)
+        '    End If
+
+        'End Function
 
     End Class
 

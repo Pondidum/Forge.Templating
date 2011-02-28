@@ -1,4 +1,6 @@
-﻿Namespace SearchStrategies.Token
+﻿Imports Forge.Templating.Interfaces
+
+Namespace SearchStrategies.Token
 
     Friend Class ForLoopTag
         Inherits Tag
@@ -14,12 +16,12 @@
         '    (?:\s)+
         '    (?<collection>.*?)
         '\}
-        '(?<content>.*?)
+        '(?<content>.*?)S
         '\{\!end\}
         Private Const RegexForLoop As String = "(?ixms)\{\!(?:\s)?(?:foreach)(?:\s)+(?<current>.*)(?:\s)+(?:in)(?:\s)+(?<collection>.*?)\}(?<content>.*?)\{\!end\}"
 
-        Public Sub New()
-            MyBase.New(TagTypes.Composite, RegexForLoop)
+        Public Sub New(ByVal replacements As IList(Of IReplacementSource))
+            MyBase.New(replacements, TagTypes.Composite, RegexForLoop)
         End Sub
 
     End Class

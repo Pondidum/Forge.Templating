@@ -5,7 +5,7 @@ Namespace Extensions
     Module StringExtensions
 
         <Extension()>
-        Public Function Range(ByVal source As String, ByVal startIndex As Integer, ByVal length As Integer) As String
+        Public Function Range(ByVal source As String, ByVal startIndex As Integer, ByVal length As Integer) As Char()
 
             If source Is Nothing Then Throw New ArgumentNullException("source", "cannot be null")
 
@@ -17,7 +17,11 @@ Namespace Extensions
 
             If startIndex + length > source.Length Then Throw New ArgumentOutOfRangeException("startIndex+length", "must be less than input length")
 
-            Return source.Substring(startIndex, length)
+            Dim result(length) As Char
+
+            Array.Copy(source.ToArray(), startIndex, result, 0, length)
+
+            Return result
 
         End Function
 

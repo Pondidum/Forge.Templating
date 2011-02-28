@@ -30,7 +30,7 @@ Namespace SearchStrategies.Token
 
         Private Function CreateTree(ByVal collection As IEnumerable(Of MatchData)) As MatchData
 
-            Dim root = New MatchData(0, _template.Length, String.Empty, _tags(Tag.TagTypes.Composite))
+            Dim root = New MatchData(0, _template.Length, Nothing, _tags(Tag.TagTypes.Composite))
             Dim parent = root
 
             For Each match In collection
@@ -69,33 +69,22 @@ Namespace SearchStrategies.Token
             Next
 
             Dim ordered = allMatches.OrderBy(Function(m) m.Index).ToList()
-
-            'Dim index = ordered.First().Index
-
-            'If index <> 0 Then
-            '    ordered.Insert(0, New MatchData(0,
-            '                                    ordered.First().Index,
-            '                                    _template.Range(0, index),
-            '                                    _tags(Tag.TagTypes.Content)))
-            'End If
-
-            'Dim x =
-            Dim prev = New MatchData(0, 0, String.Empty, Nothing)
+            Dim previous = New MatchData(0, 0, Nothing, Nothing)
 
             For i As Integer = 1 To ordered.Count - 1
 
                 Dim current = ordered(i)
-                Dim length = current.Index - (prev.Index + prev.Length)
+                Dim length = current.Index - (previous.Index + previous.Length)
 
                 If length > 0 Then
 
-                    ordered.Insert(i, New MatchData(prev.Index + prev.Length,
+                    ordered.Insert(i, New MatchData(previous.Index + previous.Length,
                                                 length,
-                                                _template.Range(prev.Index + prev.Length, length),
+                                                _template.Range(previous.Index + previous.Length, length),
                                                 _tags(Tag.TagTypes.Content)))
                 End If
 
-                prev = current
+                previous = current
 
             Next
 
