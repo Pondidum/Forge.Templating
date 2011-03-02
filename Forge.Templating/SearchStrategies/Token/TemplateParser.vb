@@ -6,7 +6,6 @@ Namespace SearchStrategies.Token
     Friend Class TemplateParser
 
         Private ReadOnly _template As String
-        Private ReadOnly _tags As Dictionary(Of Tag.TagTypes, Tag)
 
         Public Sub New(ByVal template() As Char)
 
@@ -15,11 +14,7 @@ Namespace SearchStrategies.Token
             _template = template
 
         End Sub
-
-        Public Sub AddTags(ByVal ParamArray tags() As Tag)
-            Array.ForEach(tags, Sub(t) _tags.Add(t.Type, t))
-        End Sub
-
+        
         Public Function Process() As MatchData
 
             Dim matches = GetAllTagMatches()
@@ -30,7 +25,7 @@ Namespace SearchStrategies.Token
 
         Private Function CreateTree(ByVal collection As IEnumerable(Of MatchData)) As MatchData
 
-            Dim root = New MatchData(0, _template.Length, Nothing, _tags(Tag.TagTypes.Composite))
+            Dim root = New MatchData(0, _template.Length, Nothing, TagRepository.TagTypes.Composite)
             Dim parent = root
 
             For Each match In collection
@@ -41,7 +36,7 @@ Namespace SearchStrategies.Token
 
                 parent.AddChild(match)
 
-                If match.Tag.Type = Tag.TagTypes.Composite Then
+                If match.Type.Has(TagRepository.TagTypes.Composite) Then
 
                     parent.AddChild(match)
                     parent = match
@@ -58,18 +53,18 @@ Namespace SearchStrategies.Token
 
             Dim allMatches As New List(Of MatchData)
 
-            For Each tag In _tags.Values
+            For Each tag In TagRepository.All
 
-                For Each match As Match In Regex.Matches(_template, tag.Pattern)
+                For Each match As Match In Regex.Matches(_template, tag.Value)
 
-                    allMatches.Add(New MatchData(match, tag))
+                    allMatches.Add(TagRepository.Create(match.Index, match.Length, match.Value.ToArray(), tag.Key))
 
                 Next
 
             Next
 
             Dim ordered = allMatches.OrderBy(Function(m) m.Index).ToList()
-            Dim previous = New MatchData(0, 0, Nothing, Nothing)
+            Dim previous = New MatchData(0, 0, Nothing, TagRepository.TagTypes.Composite)
 
             For i As Integer = 1 To ordered.Count - 1
 
@@ -79,9 +74,9 @@ Namespace SearchStrategies.Token
                 If length > 0 Then
 
                     ordered.Insert(i, New MatchData(previous.Index + previous.Length,
-                                                length,
-                                                _template.Range(previous.Index + previous.Length, length),
-                                                _tags(Tag.TagTypes.Content)))
+                                                    length,
+                                                    _template.Range(previous.Index + previous.Length, length),
+                                                    TagRepository.TagTypes.Content))
                 End If
 
                 previous = current

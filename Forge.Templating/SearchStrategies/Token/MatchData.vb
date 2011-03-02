@@ -7,19 +7,15 @@ Namespace SearchStrategies.Token
         Private ReadOnly _matchIndex As Integer
         Private ReadOnly _matchLength As Integer
         Private ReadOnly _matchValue As Char()
-        Private ReadOnly _tag As Tag
+        Private ReadOnly _tag As TagRepository.TagTypes
 
-        Public Sub New(ByVal matchIndex As Integer, ByVal matchLength As Integer, ByVal matchValue As Char(), ByVal tag As Tag)
+        Public Sub New(ByVal matchIndex As Integer, ByVal matchLength As Integer, ByVal matchValue As Char(), ByVal tag As TagRepository.TagTypes)
             _matchIndex = matchIndex
             _matchLength = matchLength
             _matchValue = matchValue
             _tag = tag
         End Sub
-
-        Public Sub New(ByVal match As Match, ByVal tag As Tag)
-            Me.New(match.Index, match.Length, match.Value.ToArray(), tag)
-        End Sub
-
+        
         Public Property Parent As MatchData
         Public Property Children As List(Of MatchData)
 
@@ -35,7 +31,7 @@ Namespace SearchStrategies.Token
             End Get
         End Property
 
-        Public ReadOnly Property Tag As Tag
+        Public ReadOnly Property Type As TagRepository.TagTypes
             Get
                 Return _tag
             End Get
@@ -55,11 +51,7 @@ Namespace SearchStrategies.Token
             child.Parent = Me
 
         End Sub
-
-        Public Function Render() As Char()
-            Return _tag.Render(_matchValue)
-        End Function
-
+        
     End Class
 
 End Namespace

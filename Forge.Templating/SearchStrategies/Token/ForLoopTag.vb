@@ -24,6 +24,10 @@ Namespace SearchStrategies.Token
             MyBase.New(replacements, TagTypes.Composite, RegexForLoop)
         End Sub
 
+        Public Overrides Function Render(ByVal value() As Char) As Char()
+            Return MyBase.Render(value)
+        End Function
+
     End Class
 
 End Namespace
