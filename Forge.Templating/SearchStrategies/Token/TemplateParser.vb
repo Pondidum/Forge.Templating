@@ -15,7 +15,7 @@ Namespace SearchStrategies.Token
 
         End Sub
         
-        Public Function Process() As MatchData
+        Public Function Process() As Tag
 
             Dim matches = GetAllTagMatches()
 
@@ -23,9 +23,9 @@ Namespace SearchStrategies.Token
 
         End Function
 
-        Private Function CreateTree(ByVal collection As IEnumerable(Of MatchData)) As MatchData
+        Private Function CreateTree(ByVal collection As IEnumerable(Of Tag)) As Tag
 
-            Dim root = New MatchData(0, _template.Length, Nothing, TagRepository.TagTypes.Composite)
+            Dim root = New Tag(0, _template.Length, Nothing, TagRepository.TagTypes.Composite)
             Dim parent = root
 
             For Each match In collection
@@ -49,9 +49,9 @@ Namespace SearchStrategies.Token
 
         End Function
 
-        Private Function GetAllTagMatches() As IEnumerable(Of MatchData)
+        Private Function GetAllTagMatches() As IEnumerable(Of Tag)
 
-            Dim allMatches As New List(Of MatchData)
+            Dim allMatches As New List(Of Tag)
 
             For Each tag In TagRepository.All
 
@@ -64,7 +64,7 @@ Namespace SearchStrategies.Token
             Next
 
             Dim ordered = allMatches.OrderBy(Function(m) m.Index).ToList()
-            Dim previous = New MatchData(0, 0, Nothing, TagRepository.TagTypes.Composite)
+            Dim previous = New Tag(0, 0, Nothing, TagRepository.TagTypes.Composite)
 
             For i As Integer = 1 To ordered.Count - 1
 
@@ -73,7 +73,7 @@ Namespace SearchStrategies.Token
 
                 If length > 0 Then
 
-                    ordered.Insert(i, New MatchData(previous.Index + previous.Length,
+                    ordered.Insert(i, New Tag(previous.Index + previous.Length,
                                                     length,
                                                     _template.Range(previous.Index + previous.Length, length),
                                                     TagRepository.TagTypes.Content))
@@ -84,14 +84,14 @@ Namespace SearchStrategies.Token
             Next
 
             If Not ValidateMatches(ordered) Then
-                Return New List(Of MatchData)
+                Return New List(Of Tag)
             End If
 
             Return ordered.ToList()
 
         End Function
 
-        Private Function ValidateMatches(ByVal source As IEnumerable(Of MatchData)) As Boolean
+        Private Function ValidateMatches(ByVal source As IEnumerable(Of Tag)) As Boolean
 
             'i have a nice extension method for this, but no yield in vb and, i dont want external 
             'dependencies, and i'm not in the mood to convert this to c# atm.

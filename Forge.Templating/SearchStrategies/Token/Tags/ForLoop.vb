@@ -1,7 +1,7 @@
 ﻿Namespace SearchStrategies.Token.Tags
 
     Friend Class ForLoop
-        Inherits MatchData
+        Inherits Tag
 
         Public Sub New(ByVal matchIndex As Integer, ByVal matchLength As Integer, ByVal matchValue() As Char)
             MyBase.new(matchIndex,

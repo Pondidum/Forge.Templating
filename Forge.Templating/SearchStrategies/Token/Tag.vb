@@ -2,7 +2,7 @@
 
 Namespace SearchStrategies.Token
 
-    Friend Class MatchData
+    Friend Class Tag
 
         Private ReadOnly _matchIndex As Integer
         Private ReadOnly _matchLength As Integer
@@ -15,9 +15,9 @@ Namespace SearchStrategies.Token
             _matchValue = matchValue
             _tag = tag
         End Sub
-        
-        Public Property Parent As MatchData
-        Public Property Children As List(Of MatchData)
+
+        Public Property Parent As Tag
+        Public Property Children As List(Of Tag)
 
         Public ReadOnly Property Index As Integer
             Get
@@ -43,7 +43,7 @@ Namespace SearchStrategies.Token
             End Get
         End Property
 
-        Public Sub AddChild(ByVal child As MatchData)
+        Public Sub AddChild(ByVal child As Tag)
 
             If child Is Nothing Then Throw New ArgumentNullException("child")
 
@@ -51,7 +51,7 @@ Namespace SearchStrategies.Token
             child.Parent = Me
 
         End Sub
-        
+
     End Class
 
 End Namespace

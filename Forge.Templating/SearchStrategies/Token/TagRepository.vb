@@ -35,12 +35,12 @@ Namespace SearchStrategies.Token
 
         End Sub
 
-        Public Shared Function Create(ByVal index As Integer, ByVal length As Integer, ByVal value As Char(), ByVal tag As TagTypes) As MatchData
+        Public Shared Function Create(ByVal index As Integer, ByVal length As Integer, ByVal value As Char(), ByVal tag As TagTypes) As Tag
 
             If tag.Has(TagTypes.Content) Then
 
             ElseIf tag.Has(TagTypes.Value) Then
-                
+
             ElseIf tag.Has(TagTypes.ForLoop) Then
 
                 Return New Tags.ForLoop(index, length, value)
