@@ -1,11 +1,12 @@
 ﻿Imports Forge.Templating.Extensions
 Imports System.Text.RegularExpressions
+Imports Forge.Templating.SearchStrategies.Token.Tags
 
 Namespace SearchStrategies.Token
 
     Friend Class TemplateParser
 
-        Private ReadOnly _template As String
+        Private ReadOnly _template() As Char
 
         Public Sub New(ByVal template() As Char)
 
@@ -14,7 +15,7 @@ Namespace SearchStrategies.Token
             _template = template
 
         End Sub
-        
+
         Public Function Process() As Tag
 
             Dim matches = GetAllTagMatches()
@@ -25,8 +26,8 @@ Namespace SearchStrategies.Token
 
         Private Function CreateTree(ByVal collection As IEnumerable(Of Tag)) As Tag
 
-            Dim root = New Tag(0, _template.Length, Nothing, TagRepository.TagTypes.Composite)
-            Dim parent = root
+            Dim root = New RootTag(_template)
+            Dim parent As Tag = root
 
             For Each match In collection
 
@@ -64,7 +65,7 @@ Namespace SearchStrategies.Token
             Next
 
             Dim ordered = allMatches.OrderBy(Function(m) m.Index).ToList()
-            Dim previous = New Tag(0, 0, Nothing, TagRepository.TagTypes.Composite)
+            Dim previous = TagRepository.Create(0, 0, Nothing, TagRepository.TagTypes.Content) ' New Tag(0, 0, Nothing, TagRepository.TagTypes.Composite)
 
             For i As Integer = 1 To ordered.Count - 1
 
@@ -73,7 +74,7 @@ Namespace SearchStrategies.Token
 
                 If length > 0 Then
 
-                    ordered.Insert(i, New Tag(previous.Index + previous.Length,
+                    ordered.Insert(i, TagRepository.Create(previous.Index + previous.Length,
                                                     length,
                                                     _template.Range(previous.Index + previous.Length, length),
                                                     TagRepository.TagTypes.Content))

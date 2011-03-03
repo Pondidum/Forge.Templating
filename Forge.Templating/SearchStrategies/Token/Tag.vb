@@ -2,7 +2,7 @@
 
 Namespace SearchStrategies.Token
 
-    Friend Class Tag
+    Friend MustInherit Class Tag
 
         Private ReadOnly _matchIndex As Integer
         Private ReadOnly _matchLength As Integer
@@ -51,6 +51,8 @@ Namespace SearchStrategies.Token
             child.Parent = Me
 
         End Sub
+
+        MustOverride Function Parse() As Char()
 
     End Class
 

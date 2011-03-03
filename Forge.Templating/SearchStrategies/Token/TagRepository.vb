@@ -39,6 +39,8 @@ Namespace SearchStrategies.Token
 
             If tag.Has(TagTypes.Content) Then
 
+                Return New Tags.contentTag(index, length, value)
+
             ElseIf tag.Has(TagTypes.Value) Then
 
             ElseIf tag.Has(TagTypes.ForLoop) Then
