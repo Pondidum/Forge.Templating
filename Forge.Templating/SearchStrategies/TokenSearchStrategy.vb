@@ -7,6 +7,7 @@ Namespace SearchStrategies
 
         Private _template() As Char
         Private _replacements As IList(Of IReplacementSource)
+        Private _tree As Tag
 
         Public Sub New()
             _replacements = New List(Of IReplacementSource)
@@ -27,12 +28,20 @@ Namespace SearchStrategies
             End Set
         End Property
 
-        Public Function Parse() As String Implements ISearchStrategy.Parse
+        Public Sub Setup() Implements ISearchStrategy.Setup
 
             Dim parser = New TemplateParser(_template)
-
             Dim tree = parser.Process()
 
+            _tree = tree
+
+        End Sub
+
+        Public Function Parse() As String Implements ISearchStrategy.Parse
+            
+            Dim result = _tree.Parse(_replacements)
+
+            Return New String(result)
 
         End Function
 

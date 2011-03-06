@@ -10,11 +10,10 @@ Public Class Engine
         _strategy = strategy
     End Sub
 
-    Public WriteOnly Property Template As String
-        Set(ByVal value As String)
-            _template = value.ToArray
-        End Set
-    End Property
+    Public Sub SetTemplate(ByVal template() As Char)
+        _template = template
+        _strategy.Setup()
+    End Sub
 
     Public Function Parse(ByVal replacementSource As IReplacementSource) As String
 

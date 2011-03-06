@@ -35,6 +35,10 @@ Namespace SearchStrategies
             End Set
         End Property
 
+        Public Sub Setup() Implements ISearchStrategy.Setup
+
+        End Sub
+
         Public Function Parse() As String Implements ISearchStrategy.Parse
 
             If _template Is Nothing OrElse _template.Length = 0 Then
