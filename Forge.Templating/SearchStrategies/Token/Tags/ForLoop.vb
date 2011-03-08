@@ -12,7 +12,7 @@ Namespace SearchStrategies.Token.Tags
                        TagRepository.TagTypes.Composite Or TagRepository.TagTypes.ForLoop)
         End Sub
 
-        Public Overrides Function Parse(ByVal replacements As IList(Of IReplacementSource)) As Char()
+        Public Overrides Function Render(ByVal replacements As IList(Of IReplacementSource)) As Char()
 
 
         End Function

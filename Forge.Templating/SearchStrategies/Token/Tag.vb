@@ -53,7 +53,7 @@ Namespace SearchStrategies.Token
 
         End Sub
 
-        MustOverride Function Parse(ByVal replacements As IList(Of IReplacementSource)) As Char()
+        MustOverride Function Render(ByVal replacements As IList(Of IReplacementSource)) As Char()
 
     End Class
 

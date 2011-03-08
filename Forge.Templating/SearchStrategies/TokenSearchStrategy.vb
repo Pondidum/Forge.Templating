@@ -39,7 +39,7 @@ Namespace SearchStrategies
 
         Public Function Parse() As String Implements ISearchStrategy.Parse
             
-            Dim result = _tree.Parse(_replacements)
+            Dim result = _tree.Render(_replacements)
 
             Return New String(result)
 

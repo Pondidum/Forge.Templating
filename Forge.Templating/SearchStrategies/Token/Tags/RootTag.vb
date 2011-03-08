@@ -12,12 +12,12 @@ Namespace SearchStrategies.Token.Tags
                        TagRepository.TagTypes.Composite Or TagRepository.TagTypes.Content)
         End Sub
 
-        Public Overrides Function Parse(ByVal replacements As IList(Of IReplacementSource)) As Char()
+        Public Overrides Function Render(ByVal replacements As IList(Of IReplacementSource)) As Char()
 
             Dim output As New List(Of Char)(Me.Length)
 
             For Each child In Me.Children
-                output.AddRange(child.Parse(replacements))
+                output.AddRange(child.Render(replacements))
             Next
 
             Return output.ToArray()
