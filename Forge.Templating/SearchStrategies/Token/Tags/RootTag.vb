@@ -1,4 +1,6 @@
-﻿Namespace SearchStrategies.Token.Tags
+﻿Imports Forge.Templating.Interfaces
+
+Namespace SearchStrategies.Token.Tags
 
     Friend Class RootTag
         Inherits Tag
@@ -10,12 +12,12 @@
                        TagRepository.TagTypes.Composite Or TagRepository.TagTypes.Content)
         End Sub
 
-        Public Overrides Function Parse() As Char()
+        Public Overrides Function Parse(ByVal replacements As IList(Of IReplacementSource)) As Char()
 
             Dim output As New List(Of Char)(Me.Length)
 
             For Each child In Me.Children
-                output.AddRange(child.Parse())
+                output.AddRange(child.Parse(replacements))
             Next
 
             Return output.ToArray()

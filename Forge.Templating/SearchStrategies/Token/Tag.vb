@@ -1,4 +1,5 @@
 ﻿Imports System.Text.RegularExpressions
+Imports Forge.Templating.Interfaces
 
 Namespace SearchStrategies.Token
 
@@ -52,7 +53,7 @@ Namespace SearchStrategies.Token
 
         End Sub
 
-        MustOverride Function Parse() As Char()
+        MustOverride Function Parse(ByVal replacements As IList(Of IReplacementSource)) As Char()
 
     End Class
 
