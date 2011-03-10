@@ -1,11 +1,10 @@
 ﻿Imports Forge.Templating.Extensions
-Imports System.Text.RegularExpressions
 Imports Forge.Templating.SearchStrategies.Token.Tags
+Imports System.Text.RegularExpressions
 
 Namespace SearchStrategies.Token
 
     Friend Class TemplateParser
-
         Private ReadOnly _template() As Char
 
         Public Sub New(ByVal template() As Char)
@@ -65,7 +64,7 @@ Namespace SearchStrategies.Token
             Next
 
             Dim ordered = allMatches.OrderBy(Function(m) m.Index).ToList()
-            Dim previous = TagRepository.Create(0, 0, Nothing, TagRepository.TagTypes.Content) ' New Tag(0, 0, Nothing, TagRepository.TagTypes.Composite)
+            Dim previous = TagRepository.Create(0, 0, Nothing, TagRepository.TagTypes.Content)
 
             For i As Integer = 1 To ordered.Count - 1
 
@@ -75,9 +74,9 @@ Namespace SearchStrategies.Token
                 If length > 0 Then
 
                     ordered.Insert(i, TagRepository.Create(previous.Index + previous.Length,
-                                                    length,
-                                                    _template.Range(previous.Index + previous.Length, length),
-                                                    TagRepository.TagTypes.Content))
+                                                           length,
+                                                           _template.Range(previous.Index + previous.Length, length),
+                                                           TagRepository.TagTypes.Content))
                 End If
 
                 previous = current
