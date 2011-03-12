@@ -9,7 +9,7 @@ Namespace SearchStrategies.Token.Tags
             MyBase.new(matchIndex,
                        matchLength,
                        matchValue,
-                       TagRepository.TagTypes.Composite Or TagRepository.TagTypes.ForLoop)
+                       TagRepository.TagTypes.ForLoop)
         End Sub
 
         Public Overrides Function Render(ByVal replacements As IList(Of IReplacementSource)) As Char()

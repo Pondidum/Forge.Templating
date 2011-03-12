@@ -46,16 +46,14 @@
 
         End Function
 
-        <Flags()> _
         Public Enum TagTypes
-            [Single] = 1
-            Composite = 2
 
-            Content = 4
-            Value = 8
+            Content = 0
+            Value
 
-            Root = 16
-            ForLoop = 32
+            Root = 100
+            ForLoop
+
         End Enum
 
         Private Class TagDefinition

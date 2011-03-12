@@ -9,7 +9,7 @@ Namespace SearchStrategies.Token.Tags
             MyBase.New(0,
                        template.Count(),
                        template,
-                       TagRepository.TagTypes.Composite Or TagRepository.TagTypes.Content)
+                       TagRepository.TagTypes.Root)
         End Sub
 
         Public Overrides Function Render(ByVal replacements As IList(Of IReplacementSource)) As Char()

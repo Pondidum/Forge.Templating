@@ -36,7 +36,7 @@ Namespace SearchStrategies.Token
 
                 parent.AddChild(match)
 
-                If match.Type.Has(TagRepository.TagTypes.Composite) Then
+                If match.Type >= TagRepository.TagTypes.Root Then
 
                     parent.AddChild(match)
                     parent = match
