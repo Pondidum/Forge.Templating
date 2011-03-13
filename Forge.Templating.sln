@@ -7,6 +7,8 @@ Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Forge.Templating.Tests", "F
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Forge.Templating.ConsoleTest", "Forge.Templating.ConsoleTest\Forge.Templating.ConsoleTest.vbproj", "{AEADF8C7-0CD9-4453-B699-D2E3F086199E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forge.Templating.Specs", "Forge.Templating.Specs\Forge.Templating.Specs.csproj", "{5FB16B77-823A-4895-A4AA-6829EDBCCAAF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,6 +49,16 @@ Global
 		{AEADF8C7-0CD9-4453-B699-D2E3F086199E}.Release|Mixed Platforms.Build.0 = Release|x86
 		{AEADF8C7-0CD9-4453-B699-D2E3F086199E}.Release|x86.ActiveCfg = Release|x86
 		{AEADF8C7-0CD9-4453-B699-D2E3F086199E}.Release|x86.Build.0 = Release|x86
+		{5FB16B77-823A-4895-A4AA-6829EDBCCAAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5FB16B77-823A-4895-A4AA-6829EDBCCAAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5FB16B77-823A-4895-A4AA-6829EDBCCAAF}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{5FB16B77-823A-4895-A4AA-6829EDBCCAAF}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{5FB16B77-823A-4895-A4AA-6829EDBCCAAF}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5FB16B77-823A-4895-A4AA-6829EDBCCAAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5FB16B77-823A-4895-A4AA-6829EDBCCAAF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5FB16B77-823A-4895-A4AA-6829EDBCCAAF}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{5FB16B77-823A-4895-A4AA-6829EDBCCAAF}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{5FB16B77-823A-4895-A4AA-6829EDBCCAAF}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
