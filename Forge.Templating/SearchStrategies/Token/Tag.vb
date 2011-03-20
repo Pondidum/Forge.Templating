@@ -11,10 +11,14 @@ Namespace SearchStrategies.Token
         Private ReadOnly _tag As TagRepository.TagTypes
 
         Public Sub New(ByVal matchIndex As Integer, ByVal matchLength As Integer, ByVal matchValue As Char(), ByVal tag As TagRepository.TagTypes)
+
             _matchIndex = matchIndex
             _matchLength = matchLength
             _matchValue = matchValue
             _tag = tag
+
+            Children = New List(Of Tag)
+
         End Sub
 
         Public Property Parent As Tag

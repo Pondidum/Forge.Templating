@@ -3,9 +3,11 @@
     Friend Class TagRepository
 
         Private Shared ReadOnly _tags As IDictionary(Of TagTypes, TagDefinition)
+        Private Shared ReadOnly _specialTags() As TagTypes
 
         Shared Sub New()
             _tags = New Dictionary(Of TagTypes, TagDefinition)
+            _specialTags = New TagTypes() {TagTypes.Content, TagTypes.Root}
 
             Add(TagTypes.Content,
                 "",
@@ -15,7 +17,7 @@
             '    "(?ixm)\{(?<object>.*?)(?:\.)(?<property>.*?)\}",
             '    Function(i, l, v) New Tags.valuetag(i, l, v))
 
-            'Add(TagTypes.Root, "", Function(i,l,v) New Tags.RootTag()) 'special case
+            'Add(TagTypes.Root, "", Function(i, l, v) New Tags.RootTag(v)) 'special case
 
             Add(TagTypes.ForLoop,
                 "(?ixms)\{\!(?:\s)?(?:foreach)(?:\s)+(?<current>.*)(?:\s)+(?:in)(?:\s)+(?<collection>.*?)\}(?<content>.*?)\{\!end\}",
@@ -24,9 +26,11 @@
 
         End Sub
 
-        Public Shared ReadOnly Property All As IDictionary(Of TagTypes, String)
+        Public Shared ReadOnly Property AllTags As IDictionary(Of TagTypes, String)
             Get
-                Return _tags.ToDictionary(Function(t) t.Key, Function(t) t.Value.Pattern)
+                Return _tags.Where(Function(t) Not _specialTags.Contains(t.Key)).
+                             ToDictionary(Function(t) t.Key,
+                                          Function(t) t.Value.Pattern)
             End Get
         End Property
 

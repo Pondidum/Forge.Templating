@@ -10,6 +10,7 @@ Namespace SearchStrategies.Token
         Public Sub New(ByVal template() As Char)
 
             If template Is Nothing Then Throw New ArgumentNullException("template")
+            If template.Count() = 0 Then Throw New ArgumentOutOfRangeException("template")
 
             _template = template
 
@@ -38,7 +39,7 @@ Namespace SearchStrategies.Token
 
                 If match.Type >= TagRepository.TagTypes.Root Then
 
-                    parent.AddChild(match)
+                    'parent.AddChild(match)
                     parent = match
 
                 End If
@@ -53,7 +54,7 @@ Namespace SearchStrategies.Token
 
             Dim allMatches As New List(Of Tag)
 
-            For Each tag In TagRepository.All
+            For Each tag In TagRepository.AllTags
 
                 For Each match As Match In Regex.Matches(_template, tag.Value)
 
@@ -82,6 +83,13 @@ Namespace SearchStrategies.Token
                 previous = current
 
             Next
+
+            Dim previousEnd = previous.Index + previous.Length
+
+            ordered.Add(TagRepository.Create(previousEnd,
+                                             _template.Length - previousEnd,
+                                             _template.Range(previousEnd, _template.Length - previousEnd),
+                                             TagRepository.TagTypes.Content))
 
             If Not ValidateMatches(ordered) Then
                 Return New List(Of Tag)
