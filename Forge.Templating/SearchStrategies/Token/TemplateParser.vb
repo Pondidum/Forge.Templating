@@ -65,7 +65,21 @@ Namespace SearchStrategies.Token
             Next
 
             Dim ordered = allMatches.OrderBy(Function(m) m.Index).ToList()
-            Dim previous = TagRepository.Create(0, 0, Nothing, TagRepository.TagTypes.Content)
+            Dim previous As Tag = Nothing
+
+            If ordered.Count = 0 Then
+                ordered.Insert(0, TagRepository.Create(0,
+                                                       _template.Length,
+                                                       _template,
+                                                       TagRepository.TagTypes.Content))
+            ElseIf ordered.First.Index > 0 Then
+                ordered.Insert(0, TagRepository.Create(0,
+                                                       ordered.First().Index,
+                                                       _template.Range(0, ordered.First().Index),
+                                                       TagRepository.TagTypes.Content))
+            End If
+
+            previous = ordered.First()
 
             For i As Integer = 1 To ordered.Count - 1
 
@@ -83,19 +97,23 @@ Namespace SearchStrategies.Token
                 previous = current
 
             Next
-
+            
             Dim previousEnd = previous.Index + previous.Length
 
-            ordered.Add(TagRepository.Create(previousEnd,
-                                             _template.Length - previousEnd,
-                                             _template.Range(previousEnd, _template.Length - previousEnd),
-                                             TagRepository.TagTypes.Content))
+            If previousEnd < _template.Length Then
+
+                ordered.Add(TagRepository.Create(previousEnd,
+                                                 _template.Length - previousEnd,
+                                                 _template.Range(previousEnd, _template.Length - previousEnd),
+                                                 TagRepository.TagTypes.Content))
+
+            End If
 
             If Not ValidateMatches(ordered) Then
                 Return New List(Of Tag)
             End If
 
-            Return ordered.ToList()
+            Return ordered
 
         End Function
 

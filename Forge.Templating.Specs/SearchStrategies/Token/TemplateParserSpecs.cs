@@ -11,16 +11,17 @@ namespace Forge.Templating.Specs.SearchStrategies.Token
         internal static TemplateParser parser;
         internal static Tag tag;
 
-        Because of = () =>
-                         {
-                             ex = Catch.Exception(() => parser = new TemplateParser(template.ToCharArray()));
-                             tag = parser.Process();
-                         };
+        Because of = () => ex = Catch.Exception(() =>
+                                                    {
+                                                        parser = new TemplateParser(template.ToCharArray());
+                                                        tag = parser.Process();
+                                                    });
+
     }
 
-    public class When_passed_a_null_template : TemplateParserBase
+    public class When_passed_a_null_template : SpecBase
     {
-        Establish context = () => template = null;
+        Because of = () => ex = Catch.Exception(() => new TemplateParser(null));
         It should_throw_an_argument_exception = () => ex.ShouldBeOfType(typeof(ArgumentNullException));
     }
 
@@ -64,6 +65,16 @@ namespace Forge.Templating.Specs.SearchStrategies.Token
         It should_return_a_tag_tree = () => tag.ShouldNotBeNull();
         It should_have_two_child_tags = () => tag.Children.Count.ShouldEqual(2);
         It should_have_the_first_as_value_tag = () => tag.Children.First().Type.ShouldEqual(TagRepository.TagTypes.Value);
-        It should_have_the_second_as_content_tag = () => tag.Children.First().Type.ShouldEqual(TagRepository.TagTypes.Content);
+        It should_have_the_second_as_content_tag = () => tag.Children.Last().Type.ShouldEqual(TagRepository.TagTypes.Content);
+    }
+
+    public class When_passed_a_template_with_content_and_a_value_tag : TemplateParserBase
+    {
+        Establish context = () => template = "Welcome, {person.name}";
+
+        It should_return_a_tag_tree = () => tag.ShouldNotBeNull();
+        It should_have_two_child_tags = () => tag.Children.Count.ShouldEqual(2);
+        It should_have_the_first_as_content_tag = () => tag.Children.First().Type.ShouldEqual(TagRepository.TagTypes.Content);
+        It should_have_the_second_as_value_tag = () => tag.Children.Last().Type.ShouldEqual(TagRepository.TagTypes.Value);
     }
 }

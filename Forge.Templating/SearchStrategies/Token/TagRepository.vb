@@ -13,11 +13,11 @@
                 "",
                 Function(i, l, v) New Tags.ContentTag(i, l, v))
 
-            'Add(TagTypes.Value,
-            '    "(?ixm)\{(?<object>.*?)(?:\.)(?<property>.*?)\}",
-            '    Function(i, l, v) New Tags.valuetag(i, l, v))
+            Add(TagTypes.Value,
+                "(?ixm)\{(?<object>.*?)(?:\.)(?<property>.*?)\}",
+                Function(i, l, v) New Tags.valuetag(i, l, v))
 
-            'Add(TagTypes.Root, "", Function(i, l, v) New Tags.RootTag(v)) 'special case
+            Add(TagTypes.Root, "", Function(i, l, v) New Tags.RootTag(v)) 'special case
 
             Add(TagTypes.ForLoop,
                 "(?ixms)\{\!(?:\s)?(?:foreach)(?:\s)+(?<current>.*)(?:\s)+(?:in)(?:\s)+(?<collection>.*?)\}(?<content>.*?)\{\!end\}",

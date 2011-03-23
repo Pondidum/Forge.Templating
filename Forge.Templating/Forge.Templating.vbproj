@@ -102,6 +102,7 @@
     <Compile Include="SearchStrategies\Token\Tags\ContentTag.vb" />
     <Compile Include="SearchStrategies\Token\Tags\ForLoop.vb" />
     <Compile Include="SearchStrategies\Token\Tags\RootTag.vb" />
+    <Compile Include="SearchStrategies\Token\Tags\ValueTag.vb" />
     <Compile Include="SearchStrategies\Token\TemplateParser.vb" />
   </ItemGroup>
   <ItemGroup>
