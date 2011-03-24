@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Machine.Specifications;
 using Forge.Templating.SearchStrategies.Token;
@@ -31,7 +32,7 @@ namespace Forge.Templating.Specs.SearchStrategies.Token
         It should_throw_an_argument_exception = () => ex.ShouldBeOfType(typeof(ArgumentOutOfRangeException));
     }
 
-    public class When_passed_a_template_with_no_tags : TemplateParserBase
+    public class When_passed_a_template_with_only_content : TemplateParserBase
     {
         Establish context = () => template = "Test template without new lines";
 
@@ -64,8 +65,12 @@ namespace Forge.Templating.Specs.SearchStrategies.Token
 
         It should_return_a_tag_tree = () => tag.ShouldNotBeNull();
         It should_have_two_child_tags = () => tag.Children.Count.ShouldEqual(2);
-        It should_have_the_first_as_value_tag = () => tag.Children.First().Type.ShouldEqual(TagRepository.TagTypes.Value);
-        It should_have_the_second_as_content_tag = () => tag.Children.Last().Type.ShouldEqual(TagRepository.TagTypes.Content);
+        It should_have_the_correct_tags_in_order = () => tag.Children.Select(t => t.Type).ShouldEqual(
+            new List<TagRepository.TagTypes>
+                {
+                    TagRepository.TagTypes.Value,
+                    TagRepository.TagTypes.Content
+                });
     }
 
     public class When_passed_a_template_with_content_and_a_value_tag : TemplateParserBase
@@ -74,7 +79,27 @@ namespace Forge.Templating.Specs.SearchStrategies.Token
 
         It should_return_a_tag_tree = () => tag.ShouldNotBeNull();
         It should_have_two_child_tags = () => tag.Children.Count.ShouldEqual(2);
-        It should_have_the_first_as_content_tag = () => tag.Children.First().Type.ShouldEqual(TagRepository.TagTypes.Content);
-        It should_have_the_second_as_value_tag = () => tag.Children.Last().Type.ShouldEqual(TagRepository.TagTypes.Value);
+        It should_have_the_correct_tags_in_order = () => tag.Children.Select(t => t.Type).ShouldEqual(
+            new List<TagRepository.TagTypes>
+                {
+                    TagRepository.TagTypes.Content,
+                    TagRepository.TagTypes.Value
+                });
+    }
+
+    public class When_passed_a_template_with_content_value_content_tags : TemplateParserBase
+    {
+        Establish context = () => template = "Welcome {person.name}, to the place.";
+
+        It should_return_a_tag_tree = () => tag.ShouldNotBeNull();
+        It should_have_three_child_tags = () => tag.Children.Count.ShouldEqual(3);
+        It should_have_the_correct_tags_in_order = () => tag.Children.Select(t => t.Type).ShouldEqual(
+            new List<TagRepository.TagTypes>
+                {
+                    TagRepository.TagTypes.Content,
+                    TagRepository.TagTypes.Value,
+                    TagRepository.TagTypes.Content
+                });
+
     }
 }
