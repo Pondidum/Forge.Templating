@@ -14,15 +14,18 @@
                 Function(i, l, v) New Tags.ContentTag(i, l, v))
 
             Add(TagTypes.Value,
-                "(?ixm)\{(?<object>.*?)(?:\.)(?<property>.*?)\}",
-                Function(i, l, v) New Tags.valuetag(i, l, v))
+                "(?ixm)\{(?<property>[^!].*?)\}",
+                Function(i, l, v) New Tags.ValueTag(i, l, v))
 
             Add(TagTypes.Root, "", Function(i, l, v) New Tags.RootTag(v)) 'special case
 
             Add(TagTypes.ForLoop,
-                "(?ixms)\{\!(?:\s)?(?:foreach)(?:\s)+(?<current>.*)(?:\s)+(?:in)(?:\s)+(?<collection>.*?)\}(?<content>.*?)\{\!end\}",
+                "(?ixms)\{\!(?:\s)?(?:foreach)(?:\s)+(?<current>.*)(?:\s)+(?:in)(?:\s)+(?<collection>.*?)\}(?<content>.*?)",
                 Function(i, l, v) New Tags.ForLoop(i, l, v))
 
+            Add(TagTypes.End,
+                "(?ixms)\{\!end\}",
+                Function(i, l, v) New Tags.EndTag(i, l, v))
 
         End Sub
 
@@ -54,6 +57,7 @@
 
             Content = 0
             Value
+            [End]
 
             Root = 100
             ForLoop

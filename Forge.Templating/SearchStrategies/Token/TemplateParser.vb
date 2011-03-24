@@ -31,17 +31,19 @@ Namespace SearchStrategies.Token
 
             For Each match In collection
 
-                While match.Index > (parent.Index + parent.Length)
+                If match.Index > (parent.Index + parent.Length) Then
                     parent = parent.Parent
-                End While
 
-                parent.AddChild(match)
+                Else
 
-                If match.Type >= TagRepository.TagTypes.Root Then
+                    parent.AddChild(match)
 
-                    'parent.AddChild(match)
-                    parent = match
+                    If match.Type >= TagRepository.TagTypes.Root Then
 
+                        'parent.AddChild(match)
+                        parent = match
+
+                    End If
                 End If
 
             Next

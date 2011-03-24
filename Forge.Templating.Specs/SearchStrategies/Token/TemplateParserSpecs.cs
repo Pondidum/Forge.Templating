@@ -102,4 +102,24 @@ namespace Forge.Templating.Specs.SearchStrategies.Token
                 });
 
     }
+
+    public class When_passed_a_template_with_a_for_loop_with_content : TemplateParserBase
+    {
+        Establish context = () => template = "{!foreach person in people}\r\nTesting{!end}";
+
+        It should_return_a_tag_tree = () => tag.ShouldNotBeNull();
+        It should_have_one_child_tag = () => tag.Children.Count.ShouldEqual(1);
+        It should_have_one_sub_child = () => tag.Children.First().Children.Count.ShouldEqual(1);
+        It should_have_one_sub_child_type_content = () => tag.Children.First().Children.First().Type.ShouldEqual(TagRepository.TagTypes.Content);
+    }
+
+    public class When_passed_a_template_with_a_for_loop_with_value : TemplateParserBase
+    {
+        Establish context = () => template = "{!foreach person in people}{person.name}{!end}";
+
+        It should_return_a_tag_tree = () => tag.ShouldNotBeNull();
+        It should_have_one_child_tag = () => tag.Children.Count.ShouldEqual(1);
+        It should_have_one_sub_child = () => tag.Children.First().Children.Count.ShouldEqual(1);
+        It should_have_one_sub_child_type_value = () => tag.Children.First().Children.First().Type.ShouldEqual(TagRepository.TagTypes.Value);
+    }
 }
